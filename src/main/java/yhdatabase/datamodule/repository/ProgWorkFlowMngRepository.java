@@ -43,7 +43,7 @@ public class ProgWorkFlowMngRepository {
         return progWorkFlowMng;
     }
 
-   /* @Transactional
+    @Transactional
     public Optional<ProgWorkFlowMng> findById(Long flowId) {
         String sql = "select * from prog_work_flow_mng where flow_id = :flowId";
 
@@ -55,9 +55,9 @@ public class ProgWorkFlowMngRepository {
             log.info("Optional<ProgWorkFlowMng>.empty(), flow_id={}", flowId);
             return Optional.empty();
         }
-    }*/
+    }
 
-   /* private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
+    private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
         return ((rs, rowNum) -> {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();
             progWorkFlowMng.setFlowId(rs.getLong("flow_id"));
@@ -71,5 +71,5 @@ public class ProgWorkFlowMngRepository {
             progWorkFlowMng.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));
             return progWorkFlowMng;
         });
-    }*/
+    }
 }

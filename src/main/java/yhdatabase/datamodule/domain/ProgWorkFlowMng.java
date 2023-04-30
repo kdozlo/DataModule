@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 @Getter
 @Setter
@@ -40,11 +39,6 @@ public class ProgWorkFlowMng {
         this.crtdDttm = crtdDttm;
         this.updtdttm = updtdttm;
         this.dltDttm = dltDttm;
-    }
-
-    public void setFlowAttr(JSONObject flowAttr) {
-
-        this.flowAttr = flowAttr;
     }
 
     public ProgWorkFlowMng() {

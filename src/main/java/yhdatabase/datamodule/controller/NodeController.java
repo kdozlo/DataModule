@@ -13,6 +13,8 @@ import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 import yhdatabase.datamodule.service.ProgMstService;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -33,11 +35,10 @@ public class NodeController {
     }
 
     @PostMapping("/project/{progId}")
-    public String saveProgWorkFlowMng(@RequestBody ProgWorkFlowMng progWorkFlowMng, @RequestBody HashMap<String, String>[] h, RedirectAttributes redirectAttributes) {
+    public String saveProgWorkFlowMng(@PathVariable String progId, @RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
 
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngRepository.save(progWorkFlowMng);
         redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
-        redirectAttributes.addAttribute("crtdDttm", savedProgWorkFlowMng.getCrtdDttm());
 
         return "redirect:/project/{progId}/{flowId}";
     }
