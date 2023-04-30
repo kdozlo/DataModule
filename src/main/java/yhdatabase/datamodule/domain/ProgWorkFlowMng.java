@@ -43,7 +43,8 @@ public class ProgWorkFlowMng {
 
     public ProgWorkFlowMng() {
     }
-
+    
+    //sql 없는 예외 사항 구현 해야함
     public String findSql() {
         return this.flowAttr.getString("sql");
     }

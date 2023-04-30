@@ -42,4 +42,9 @@ public class NodeController {
 
         return "redirect:/project/{progId}/{flowId}";
     }
+
+   /* @GetMapping("/api/articles")
+    public List<Article> getAllArticle(){
+        return articleService.getArticles();
+    }*/
 }

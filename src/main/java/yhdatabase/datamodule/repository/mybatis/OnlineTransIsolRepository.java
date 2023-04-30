@@ -1,4 +1,4 @@
-package yhdatabase.datamodule.repository;
+package yhdatabase.datamodule.repository.mybatis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.OnlineTransIsol;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
+import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 import yhdatabase.datamodule.service.SqlResultDto;
 
 import javax.sql.DataSource;
@@ -30,13 +31,13 @@ public class OnlineTransIsolRepository {
                 .usingGeneratedKeyColumns("idx");
     }
 
-   /* public List<OnlineTransIsol> findAllById(Long flowId) {
-        Optional<ProgWorkFlowMng> progWorkFlowMng = progWorkFlowMngRepository.findById(flowId);
-        String sql = progWorkFlowMng.get().findSql();
+    public List<OnlineTransIsol> findSQLResult(ProgWorkFlowMng progWorkFlowMng) {
+        String sql = progWorkFlowMng.findSql();
+
 
 
 
 
         return null;
-    }*/
+    }
 }
