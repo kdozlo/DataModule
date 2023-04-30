@@ -1,7 +1,6 @@
 package yhdatabase.datamodule.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
-import yhdatabase.datamodule.service.SqlResultDto;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;

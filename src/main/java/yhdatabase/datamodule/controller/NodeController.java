@@ -2,19 +2,19 @@ package yhdatabase.datamodule.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
+import yhdatabase.datamodule.service.OnlineTransIsolService;
 import yhdatabase.datamodule.service.ProgMstService;
+import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -23,7 +23,9 @@ import java.util.Map;
 public class NodeController {
     private final ProgMstService progMstService;
 
-    private final ProgWorkFlowMngRepository progWorkFlowMngRepository;
+    private final ProgWorkFlowMngService progWorkFlowMngService;
+
+    private final OnlineTransIsolService onlineTransIsolService;
 
     @PostMapping("/project")
     public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
@@ -37,14 +39,17 @@ public class NodeController {
     @PostMapping("/project/{progId}")
     public String saveProgWorkFlowMng(@PathVariable String progId, @RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
 
-        ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngRepository.save(progWorkFlowMng);
+        ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
         redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
 
         return "redirect:/project/{progId}/{flowId}";
     }
 
-   /* @GetMapping("/api/articles")
-    public List<Article> getAllArticle(){
-        return articleService.getArticles();
-    }*/
+    @GetMapping("/project/{progId}/{flowId}")
+    public List<Map<String, Object>> getAllArticle(@PathVariable String progId, @PathVariable String flowId){
+        Optional<ProgWorkFlowMng> findProgWorkFlowMng = progWorkFlowMngService.findById(Long.parseLong(flowId));
+        List<Map<String, Object>> sqlResult = onlineTransIsolService.findSQLResult(findProgWorkFlowMng);
+
+        return sqlResult;
+    }
 }
