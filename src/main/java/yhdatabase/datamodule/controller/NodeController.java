@@ -36,7 +36,7 @@ public class NodeController {
         return "redirect:/project/{progId}";
     }
 
-    @PostMapping("/project/{progId}")
+    @PostMapping("/project/savenode/{progId}")
     public String saveProgWorkFlowMng(@PathVariable String progId, @RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
 
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
