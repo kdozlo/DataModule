@@ -45,8 +45,8 @@ public class NodeController {
         return "redirect:/project/{progId}/{flowId}";
     }
 
-    @GetMapping("/project/{progId}/{flowId}")
-    public List<Map<String, Object>> getAllArticle(@PathVariable String progId, @PathVariable String flowId){
+    @GetMapping("/project/sqlResult/{progId}/{flowId}")
+    public List<Map<String, Object>> getAllsqlResult(@PathVariable String progId, @PathVariable String flowId){
         Optional<ProgWorkFlowMng> findProgWorkFlowMng = progWorkFlowMngService.findById(Long.parseLong(flowId));
         List<Map<String, Object>> sqlResult = onlineTransIsolService.findSQLResult(findProgWorkFlowMng);
 
