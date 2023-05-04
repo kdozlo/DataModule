@@ -25,13 +25,6 @@ public class OnlineTransIsolRepository {
         String sql = progWorkFlowMng.get().findSql();
 
         List<Map<String, Object>> result = template.queryForList(sql);
-        for (Map<String, Object> row : result) {
-            // this.flowAttr.getString("col") 배열 값 보기 가능 ex. {"col" : ["idx", "user_no", "yyyymmdd"]}"
-            for( String key : row.keySet() ){
-                Object value = row.get(key);
-                System.out.println( String.format("키 : "+key+", 값 : "+value));
-            }
-        }
 
         return result;
     }
