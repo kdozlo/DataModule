@@ -20,6 +20,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/diagram")
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "*")
 public class NodeController {
     private final ProgMstService progMstService;
 
@@ -42,14 +43,17 @@ public class NodeController {
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
         redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
 
-        return "redirect:/project/{progId}/{flowId}";
+        return "redirect:/project/sqlResult/{progId}/{flowId}";
     }
 
     @GetMapping("/project/sqlResult/{progId}/{flowId}")
     public List<Map<String, Object>> getAllsqlResult(@PathVariable String progId, @PathVariable String flowId){
         Optional<ProgWorkFlowMng> findProgWorkFlowMng = progWorkFlowMngService.findById(Long.parseLong(flowId));
         List<Map<String, Object>> sqlResult = onlineTransIsolService.findSQLResult(findProgWorkFlowMng);
+        System.out.println();
+        onlineTransIsolService.filterSQLResult(sqlResult, findProgWorkFlowMng);
 
         return sqlResult;
     }
+
 }
