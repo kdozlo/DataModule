@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,11 @@ public class ProgWorkFlowMngService {
     @Transactional
     public Optional<ProgWorkFlowMng> findById(Long flowId) {
         return progWorkFlowMngRepository.findById(flowId);
+    }
+
+    @Transactional
+    public List<ProgWorkFlowMng> findByProgId(Long progId) {
+        return progWorkFlowMngRepository.findByProgId(progId);
     }
 
 }
