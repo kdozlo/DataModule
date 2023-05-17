@@ -7,7 +7,9 @@ import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -47,11 +49,12 @@ public class ProgWorkFlowMng {
     public ProgWorkFlowMng() {
     }
     
-    //sql 없는 예외 사항 구현 해야함
+    //select node - findSql
     public String findSql() {
         return this.flowAttr.getString("sql");
     }
 
+    //select node - findColInfo
     public List<String> findColInfo() {
         List<String> colList = new ArrayList<>();
 
@@ -63,4 +66,23 @@ public class ProgWorkFlowMng {
 
         return colList;
     }
+
+    //filter node - findFilterCondList
+    public Map<String, String[]> findFilterCondList(List<String> colList) {
+        Map<String, String[]> filterCondList = new HashMap<>();
+
+        for(int i = 0; i < colList.size(); i++) {
+            JSONArray jsonCondInfo = (JSONArray) this.flowAttr.get(colList.get(i));
+
+            String[] condInfo = new String[jsonCondInfo.length()];
+            for(int j = 0; j < jsonCondInfo.length(); j++) {
+                condInfo[j] = jsonCondInfo.get(j).toString();
+            }
+
+            filterCondList.put(colList.get(i), condInfo);
+        }
+
+        return filterCondList;
+    }
+
 }
