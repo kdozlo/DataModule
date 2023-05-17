@@ -2,7 +2,6 @@ package yhdatabase.datamodule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.OnlineTransIsolRepository;
 
@@ -67,5 +66,4 @@ public class OnlineTransIsolService {
 
         return result;
     }
-
 }

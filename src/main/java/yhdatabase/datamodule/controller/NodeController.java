@@ -43,6 +43,12 @@ public class NodeController {
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
         redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
 
+        //jsonarray 확인용 나중에 지우기
+        List<String> colCheck = savedProgWorkFlowMng.findColInfo();
+        for(String s : colCheck) {
+            System.out.println(s);
+        }
+
         return "redirect:/project/sqlResult/{progId}/{flowId}";
     }
 

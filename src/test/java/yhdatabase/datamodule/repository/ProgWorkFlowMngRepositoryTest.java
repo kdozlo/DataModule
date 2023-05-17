@@ -49,7 +49,8 @@ class ProgWorkFlowMngRepositoryTest {
 
         tempData.put("column_info", ja);
 
-        ProgWorkFlowMng addData = new ProgWorkFlowMng(null, saveProgMst.getProgId(), 1, "sql", tempData, "practice", null, null, null);
+        ProgWorkFlowMng addData = new ProgWorkFlowMng(null, saveProgMst.getProgId(), 1, "sql", tempData,
+                "practice", null, null, null);
 
         progWorkFlowMngRepository.save(addData);
     }

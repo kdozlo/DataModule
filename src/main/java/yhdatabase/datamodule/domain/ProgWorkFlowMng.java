@@ -2,9 +2,12 @@ package yhdatabase.datamodule.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,5 +50,17 @@ public class ProgWorkFlowMng {
     //sql 없는 예외 사항 구현 해야함
     public String findSql() {
         return this.flowAttr.getString("sql");
+    }
+
+    public List<String> findColInfo() {
+        List<String> colList = new ArrayList<>();
+
+        JSONArray colJsonArray = (JSONArray) this.flowAttr.get("col_info");
+
+        for(Object s : colJsonArray) {
+            colList.add(s.toString());
+        }
+
+        return colList;
     }
 }
