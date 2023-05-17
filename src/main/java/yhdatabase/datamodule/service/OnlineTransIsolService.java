@@ -2,6 +2,7 @@ package yhdatabase.datamodule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.OnlineTransIsolRepository;
 
@@ -16,6 +17,7 @@ public class OnlineTransIsolService {
 
     private final OnlineTransIsolRepository onlineTransIsolRepository;
 
+    @Transactional
     public List<Map<String, Object>> findSQLResult(Optional<ProgWorkFlowMng> progWorkFlowMng) {
 
         List<Map<String, Object>> result = onlineTransIsolRepository.findSQLResult(progWorkFlowMng);

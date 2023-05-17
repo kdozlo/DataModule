@@ -25,7 +25,6 @@ public class ProgMstRepository {
                 .usingGeneratedKeyColumns("prog_id");
     }
 
-    @Transactional
     public ProgMst save(ProgMst progMst) {
         progMst.setCrtdDttm(LocalDateTime.now());
         SqlParameterSource param = new BeanPropertySqlParameterSource(progMst);

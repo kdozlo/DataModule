@@ -30,7 +30,6 @@ public class ProgWorkFlowMngRepository {
                 .usingGeneratedKeyColumns("flow_id");
     }
 
-    @Transactional
     public ProgWorkFlowMng save(ProgWorkFlowMng progWorkFlowMng) {
         progWorkFlowMng.setCrtdDttm(LocalDateTime.now());
         SqlParameterSource param = new BeanPropertySqlParameterSource(progWorkFlowMng);
@@ -41,7 +40,6 @@ public class ProgWorkFlowMngRepository {
         return progWorkFlowMng;
     }
 
-    @Transactional
     public Optional<ProgWorkFlowMng> findById(Long flowId) {
         String sql = "select * from prog_work_flow_mng where flow_id = :flowId";
 
