@@ -8,13 +8,11 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 public class ProgWorkFlowMngRepository {
@@ -51,6 +49,23 @@ public class ProgWorkFlowMngRepository {
             log.info("Optional<ProgWorkFlowMng>.empty(), flow_id={}", flowId);
             return Optional.empty();
         }
+    }
+
+    //화면의 노드 정보들을 모두 가져옴, 이때 flowseq 오름차순으로 정렬 => 노드 순서대로 결과 처리 편함
+    public List<ProgWorkFlowMng> findByProgId(Long progId) {
+        String sql = "select * from prog_work_flow_mng where prog_id = :progId";
+
+        List<ProgWorkFlowMng> pwfList = template.query(sql, progWorkFlowMngRowMapper());
+
+        Collections.sort(pwfList, Comparator.comparingInt(ProgWorkFlowMng::getFlowSeq));
+
+        //pwfList test
+        System.out.println("pwfList test");
+        for(int i = 0; i < pwfList.size(); i++) {
+            System.out.println(pwfList.get(i).toString());
+        }
+
+        return pwfList;
     }
 
     private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {

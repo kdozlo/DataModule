@@ -35,6 +35,7 @@ public class OnlineTransIsolService {
         return result;
     }
 
+    @Transactional
     public List<Map<String, Object>> filterSQLResult(List<Map<String, Object>> sqlResult, Optional<ProgWorkFlowMng> progWorkFlowMng) {
 
         List<Map<String, Object>> result = new ArrayList<>();
