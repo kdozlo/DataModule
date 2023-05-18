@@ -22,6 +22,7 @@ public class ProgWorkFlowMng {
 
     private String flowType;
 
+
     private JSONObject flowAttr;
 
     private String flowDesc;

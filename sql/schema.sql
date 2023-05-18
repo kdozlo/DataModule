@@ -14,7 +14,7 @@ CREATE TABLE public.prog_work_flow_mng (
 	flow_id int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
 	prog_id int8 NOT NULL,
 	flow_seq int4 NOT NULL,
-	flow_type varchar(5) NOT NULL,
+	flow_type varchar(15) NOT NULL,
 	flow_attr jsonb NULL,
 	flow_desc text NULL,
 	crtd_dttm timestamp(0) NULL,

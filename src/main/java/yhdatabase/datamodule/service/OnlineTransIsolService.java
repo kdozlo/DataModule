@@ -35,63 +35,75 @@ public class OnlineTransIsolService {
     public Set<Map<String, Object>> filterSQLResult(List<Map<String, Object>> sqlResult, Optional<ProgWorkFlowMng> progWorkFlowMng) {
 
         Set<Map<String, Object>> result = new HashSet<>();
-
-        Map<String, String[]> filterCondList = new HashMap<>();
+        List<String> colList = progWorkFlowMng.get().findColInfo();
+        Map<String, String[]> filterCondList = progWorkFlowMng.get().findFilterCondList(colList);
 
         System.out.println("filterSQLResult");
 
         for (Map<String, Object> row : sqlResult) {
+            int checkCond = 0;
+            int condCnt = 0;
             for( String key : filterCondList.keySet() ){
                 String cond = filterCondList.get(key)[0];
                 String condValue = filterCondList.get(key)[1];
 
                 switch (cond) {
                     case ">":
+                        condCnt++;
                         if (Integer.parseInt(row.get(key).toString()) > Integer.parseInt(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
                         break;
 
                     case "<" :
+                        condCnt++;
                         if (Integer.parseInt(row.get(key).toString()) < Integer.parseInt(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
 
                         break;
 
                     case ">=" :
+                        condCnt++;
                         if (Integer.parseInt(row.get(key).toString()) >= Integer.parseInt(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
 
                         break;
 
                     case "<=" :
+                        condCnt++;
                         if (Integer.parseInt(row.get(key).toString()) <= Integer.parseInt(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
 
                         break;
 
                     case "=" :
+                        condCnt++;
                         if (row.get(key).toString().equals(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
                         break;
 
                     case "LIKE":
+                        condCnt++;
                         if (row.get(key).toString().contains(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
                         break;
 
                     case "NOT LIKE":
+                        condCnt++;
                         if (!row.get(key).toString().contains(condValue)) {
-                            result.add(row);
+                            checkCond++;
                         }
                         break;
                 }
             }
+
+            if(condCnt == checkCond)
+                result.add(row);
         }
 
         //filterSQLResult 출력값

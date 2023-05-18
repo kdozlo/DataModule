@@ -3,6 +3,7 @@ package yhdatabase.datamodule.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -55,7 +56,8 @@ public class ProgWorkFlowMngRepository {
     public List<ProgWorkFlowMng> findByProgId(Long progId) {
         String sql = "select * from prog_work_flow_mng where prog_id = :progId";
 
-        List<ProgWorkFlowMng> pwfList = template.query(sql, progWorkFlowMngRowMapper());
+        Map<String, Object> param = Map.of("progId", progId);
+        List<ProgWorkFlowMng> pwfList = template.query(sql, param, progWorkFlowMngRowMapper());
 
         Collections.sort(pwfList, Comparator.comparingInt(ProgWorkFlowMng::getFlowSeq));
 
