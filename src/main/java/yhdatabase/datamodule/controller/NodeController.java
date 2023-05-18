@@ -9,13 +9,11 @@ import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 import yhdatabase.datamodule.service.OnlineTransIsolService;
+import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgMstService;
 import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -28,6 +26,8 @@ public class NodeController {
     private final ProgWorkFlowMngService progWorkFlowMngService;
 
     private final OnlineTransIsolService onlineTransIsolService;
+
+    private final OutPutTableService outPutTableService;
 
     @PostMapping("/project")
     public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
@@ -65,7 +65,9 @@ public class NodeController {
                     filterResult = onlineTransIsolService.filterSQLResult(sqlResult, Optional.of(cur));
                     break;
                 case "output" :
+                    String tableNm = "table" + "_" + cur.getProgId().toString();
 
+                    outPutTableService.createTable(tableNm, cur.findColInfo());
                     break;
             }
 
