@@ -15,6 +15,7 @@ import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -38,7 +39,7 @@ public class NodeController {
     }
 
     @PostMapping("/project/savenode/{progId}")
-    public String saveProgWorkFlowMng(@PathVariable String progId, @RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
+    public String saveProgWorkFlowMng(@RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
 
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
         redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
@@ -46,14 +47,30 @@ public class NodeController {
         return "redirect:/project/sqlResult/{progId}/{flowId}";
     }
 
-    @GetMapping("/project/sqlResult/{progId}/{flowId}")
-    public List<Map<String, Object>> getAllsqlResult(@PathVariable String progId, @PathVariable String flowId){
-        Optional<ProgWorkFlowMng> findProgWorkFlowMng = progWorkFlowMngService.findById(Long.parseLong(flowId));
-        List<Map<String, Object>> sqlResult = onlineTransIsolService.findSQLResult(findProgWorkFlowMng);
-        System.out.println();
-        onlineTransIsolService.filterSQLResult(sqlResult, findProgWorkFlowMng);
+    @GetMapping("/project/sqlResult/{progId}")
+    public Set<Map<String, Object>> getResult(@PathVariable String progId){
+        List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
 
-        return sqlResult;
+        List<Map<String, Object>> sqlResult = null;
+        Set<Map<String, Object>> filterResult = null;
+
+        for (ProgWorkFlowMng cur : nodeList) {
+            String flowType = cur.getFlowType();
+
+            switch(flowType) {
+                case "select" :
+                    sqlResult = onlineTransIsolService.findSQLResult(Optional.of(cur));
+                    break;
+                case "filter" :
+                    filterResult = onlineTransIsolService.filterSQLResult(sqlResult, Optional.of(cur));
+                    break;
+                case "output" :
+                    break;
+            }
+
+        }
+
+        return filterResult;
     }
 
 }
