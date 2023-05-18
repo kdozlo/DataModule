@@ -6,5 +6,5 @@ import java.util.List;
 
 @Mapper
 public interface OutPutTableMapper {
-    void creatTable(Long progId, List<String> colInfo);
+    void createTable(Long progId, List<String> colInfo);
 }
