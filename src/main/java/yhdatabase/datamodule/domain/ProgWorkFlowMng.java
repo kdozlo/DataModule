@@ -55,7 +55,7 @@ public class ProgWorkFlowMng {
         return this.flowAttr.getString("sql");
     }
 
-    //select node - findColInfo
+    //findColInfo
     public List<String> findColInfo() {
         List<String> colList = new ArrayList<>();
 

@@ -65,6 +65,7 @@ public class NodeController {
                     filterResult = onlineTransIsolService.filterSQLResult(sqlResult, Optional.of(cur));
                     break;
                 case "output" :
+
                     break;
             }
 
