@@ -67,6 +67,8 @@ public class NodeController {
                 case "output" :
                     String tableNm = "table" + "_" + cur.getProgId().toString();
 
+
+
                     outPutTableService.createTable(tableNm, cur.findColInfo());
                     break;
             }
