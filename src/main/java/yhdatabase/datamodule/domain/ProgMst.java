@@ -21,18 +21,18 @@ public class ProgMst {
 
     private LocalDateTime crtdDttm;
 
-    private LocalDateTime updtdttm;
+    private LocalDateTime updtDttm;
 
     private LocalDateTime dltDttm;
 
     public ProgMst(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn,
-                   LocalDateTime crtdDttm, LocalDateTime updtdttm, LocalDateTime dltDttm) {
+                   LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
         this.progNm = progNm;
         this.progDesc = progDesc;
         this.viewAttr = viewAttr;
         this.useYn = useYn;
         this.crtdDttm = crtdDttm;
-        this.updtdttm = updtdttm;
+        this.updtDttm = updtDttm;
         this.dltDttm = dltDttm;
     }
 }

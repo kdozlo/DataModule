@@ -58,8 +58,6 @@ public class ProgWorkFlowMngRepository {
         Map<String, Object> param = Map.of("progId", progId);
         List<ProgWorkFlowMng> pwfList = template.query(sql, param, progWorkFlowMngRowMapper());
 
-        Collections.sort(pwfList, Comparator.comparingInt(ProgWorkFlowMng::getFlowSeq));
-
         //pwfList test
         System.out.println("pwfList test");
         for(int i = 0; i < pwfList.size(); i++) {
@@ -74,10 +72,8 @@ public class ProgWorkFlowMngRepository {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();
             progWorkFlowMng.setFlowId(rs.getLong("flow_id"));
             progWorkFlowMng.setProgId(rs.getLong("prog_id"));
-            progWorkFlowMng.setFlowSeq(rs.getInt("flow_seq"));
             progWorkFlowMng.setFlowType(rs.getString("flow_type"));
             progWorkFlowMng.setFlowAttr(new JSONObject(rs.getString("flow_attr")));
-            progWorkFlowMng.setFlowDesc(rs.getString("flow_desc"));
             progWorkFlowMng.setCrtdDttm(rs.getObject("crtd_dttm", LocalDateTime.class));
             progWorkFlowMng.setUpdtdttm(rs.getObject("updt_dttm", LocalDateTime.class));
             progWorkFlowMng.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));

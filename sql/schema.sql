@@ -16,7 +16,6 @@ CREATE TABLE public.prog_work_flow_mng (
 	flow_seq int4 NOT NULL,
 	flow_type varchar(15) NOT NULL,
 	flow_attr jsonb NULL,
-	flow_desc text NULL,
 	crtd_dttm timestamp(0) NULL,
 	updt_dttm timestamp(0) NULL,
 	dlt_dttm timestamp(0) NULL,

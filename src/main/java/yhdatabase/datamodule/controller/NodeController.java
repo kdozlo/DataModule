@@ -17,7 +17,7 @@ import java.util.*;
 
 @Slf4j
 @Controller
-@RequestMapping("/diagram")
+@RequestMapping("api/diagram")
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "*")
 public class NodeController {
