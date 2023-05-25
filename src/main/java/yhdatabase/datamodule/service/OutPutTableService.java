@@ -2,6 +2,7 @@ package yhdatabase.datamodule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.OutPutTableRepository;
 
 import java.util.List;
@@ -13,15 +14,19 @@ public class OutPutTableService {
 
     private final OutPutTableRepository outPutTableRepository;
 
-    public String createTable(String tableNm, List<String> colInfo) {
+    public String createTable(String tableNm, ProgWorkFlowMng cur) {
+        List<String> colList = cur.findColInfo();
+        Map<String, String[]> outputCondList = cur.findCondList(colList);
+
+
         String sql = "CREATE TABLE public." + tableNm + " (" +
                 "id int8 NOT NULL GENERATED ALWAYS AS IDENTITY, ";
 
-        for(int i = 0; i < colInfo.size(); i++) {
-            if(i == colInfo.size() - 1) {
-                sql += colInfo.get(i) + " varchar(15));";
+        for(String s : colList) {
+            if(s.equals(colList.get(colList.size() - 1))) {
+                sql += s + " " + outputCondList.get(s)[2] +");";
             } else {
-                sql += colInfo.get(i) + " varchar(15), ";
+                sql += s + " "+ outputCondList.get(s)[2] + ", ";
             }
         }
 

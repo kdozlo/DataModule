@@ -64,8 +64,8 @@ public class ProgWorkFlowMng {
         return colList;
     }
 
-    //filter node - findFilterCondList
-    public Map<String, String[]> findFilterCondList(List<String> colList) {
+    //filter node, output node - findCondList
+    public Map<String, String[]> findCondList(List<String> colList) {
         Map<String, String[]> filterCondList = new HashMap<>();
 
         for(int i = 0; i < colList.size(); i++) {

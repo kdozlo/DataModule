@@ -36,7 +36,7 @@ public class OnlineTransIsolService {
 
         List<Map<String, Object>> result = new ArrayList<>();
         List<String> colList = progWorkFlowMng.get().findColInfo();
-        Map<String, String[]> filterCondList = progWorkFlowMng.get().findFilterCondList(colList);
+        Map<String, String[]> filterCondList = progWorkFlowMng.get().findCondList(colList);
 
         System.out.println("filterSQLResult");
 

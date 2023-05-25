@@ -68,7 +68,7 @@ public class NodeController {
 
 
 
-                    //outPutTableService.createTable(tableNm, cur.findColInfo());
+                    outPutTableService.createTable(tableNm, cur);
                     break;
             }
         }
