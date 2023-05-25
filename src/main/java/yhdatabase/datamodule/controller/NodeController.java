@@ -65,10 +65,8 @@ public class NodeController {
                     break;
                 case "output" :
                     String tableNm = "table" + "_" + cur.getProgId().toString();
-
-
-
                     outPutTableService.createTable(tableNm, cur);
+                    System.out.println("insert 개수 : " + outPutTableService.insertResult(tableNm, result));
                     break;
             }
         }

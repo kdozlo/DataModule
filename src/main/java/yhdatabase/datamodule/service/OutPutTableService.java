@@ -14,12 +14,17 @@ public class OutPutTableService {
 
     private final OutPutTableRepository outPutTableRepository;
 
+    public int insertResult(String tableNm, List<Map<String, Object>> result) {
+        return outPutTableRepository.insertResult(tableNm, result);
+    }
+
+
     public String createTable(String tableNm, ProgWorkFlowMng cur) {
         List<String> colList = cur.findColInfo();
         Map<String, String[]> outputCondList = cur.findCondList(colList);
 
 
-        String sql = "CREATE TABLE public." + tableNm + " (" +
+        String sql ="DROP TABLE IF EXISTS " + tableNm + "; CREATE TABLE public." + tableNm + " (" +
                 "id int8 NOT NULL GENERATED ALWAYS AS IDENTITY, ";
 
         for(String s : colList) {

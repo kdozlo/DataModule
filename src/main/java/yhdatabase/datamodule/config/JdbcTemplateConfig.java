@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import yhdatabase.datamodule.repository.OnlineTransIsolRepository;
+import yhdatabase.datamodule.repository.OutPutTableRepository;
 import yhdatabase.datamodule.repository.ProgMstRepository;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 
@@ -27,6 +28,11 @@ public class JdbcTemplateConfig {
     @Bean
     public OnlineTransIsolRepository onlineTransIsolRepository() {
         return new OnlineTransIsolRepository(dataSource);
+    }
+
+    @Bean
+    public OutPutTableRepository outPutTableRepository() {
+        return new OutPutTableRepository(dataSource);
     }
 
 }
