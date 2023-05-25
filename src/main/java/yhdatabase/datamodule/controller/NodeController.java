@@ -48,34 +48,43 @@ public class NodeController {
     }
 
     @GetMapping("/project/sqlResult/{progId}")
-    public Set<Map<String, Object>> getResult(@PathVariable String progId){
+    public List<Map<String, Object>> getResult(@PathVariable String progId){
         List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
 
-        List<Map<String, Object>> sqlResult = null;
-        Set<Map<String, Object>> filterResult = null;
+        List<Map<String, Object>> result = null;
 
         for (ProgWorkFlowMng cur : nodeList) {
             String flowType = cur.getFlowType();
 
             switch(flowType) {
                 case "select" :
-                    sqlResult = onlineTransIsolService.findSQLResult(Optional.of(cur));
+                    result = onlineTransIsolService.findSQLResult(Optional.of(cur));
                     break;
                 case "filter" :
-                    filterResult = onlineTransIsolService.filterSQLResult(sqlResult, Optional.of(cur));
+                    result = onlineTransIsolService.filterSQLResult(result, Optional.of(cur));
                     break;
                 case "output" :
                     String tableNm = "table" + "_" + cur.getProgId().toString();
 
 
 
-                    outPutTableService.createTable(tableNm, cur.findColInfo());
+                    //outPutTableService.createTable(tableNm, cur.findColInfo());
                     break;
             }
-
         }
 
-        return filterResult;
+
+        System.out.println("컨트롤러 후");
+        for (Map<String, Object> row : result) {
+            for( String key : row.keySet() ){
+                Object value = row.get(key);
+                System.out.printf(key+" : "+value + " ");
+            }
+            System.out.println();
+        }
+
+
+        return result;
     }
 
 }

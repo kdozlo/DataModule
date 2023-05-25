@@ -24,7 +24,7 @@ public class OnlineTransIsolService {
             // this.flowAttr.getString("col") 배열 값 보기 가능 ex. {"col" : ["idx", "user_no", "yyyymmdd"]}"
             for( String key : row.keySet() ){
                 Object value = row.get(key);
-                System.out.print( String.format(key+" : "+value + " "));
+                System.out.printf(key+" : "+value + " ");
             }
             System.out.println();
         }
@@ -32,9 +32,9 @@ public class OnlineTransIsolService {
         return result;
     }
 
-    public Set<Map<String, Object>> filterSQLResult(List<Map<String, Object>> sqlResult, Optional<ProgWorkFlowMng> progWorkFlowMng) {
+    public List<Map<String, Object>> filterSQLResult(List<Map<String, Object>> sqlResult, Optional<ProgWorkFlowMng> progWorkFlowMng) {
 
-        Set<Map<String, Object>> result = new HashSet<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         List<String> colList = progWorkFlowMng.get().findColInfo();
         Map<String, String[]> filterCondList = progWorkFlowMng.get().findFilterCondList(colList);
 
@@ -110,7 +110,7 @@ public class OnlineTransIsolService {
         for (Map<String, Object> row : result) {
             for( String key : row.keySet() ){
                 Object value = row.get(key);
-                System.out.print( String.format(key+" : "+value + " "));
+                System.out.printf(key+" : "+value + " ");
             }
             System.out.println();
         }
