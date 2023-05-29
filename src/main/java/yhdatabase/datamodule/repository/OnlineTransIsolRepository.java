@@ -22,7 +22,6 @@ public class OnlineTransIsolRepository {
     //select 노드의 sql문을 통해 나오는 데이터들
     public List<Map<String, Object>> findSQLResult(Optional<ProgWorkFlowMng> progWorkFlowMng) {
         String sql = progWorkFlowMng.get().findSql();
-
         List<Map<String, Object>> result = template.queryForList(sql);
 
         return result;

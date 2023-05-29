@@ -53,7 +53,7 @@ public class ProgWorkFlowMngRepository {
 
     //화면의 노드 정보들을 모두 가져옴, 이때 flowseq 오름차순으로 정렬 => 노드 순서대로 결과 처리 편함
     public List<ProgWorkFlowMng> findByProgId(Long progId) {
-        String sql = "select * from prog_work_flow_mng where prog_id = :progId";
+        String sql = "select * from prog_work_flow_mng where prog_id = :progId order by flow_seq";
 
         Map<String, Object> param = Map.of("progId", progId);
         List<ProgWorkFlowMng> pwfList = template.query(sql, param, progWorkFlowMngRowMapper());
@@ -61,7 +61,9 @@ public class ProgWorkFlowMngRepository {
         //pwfList test
         System.out.println("pwfList test");
         for(int i = 0; i < pwfList.size(); i++) {
-            System.out.println(pwfList.get(i).toString());
+            System.out.print(pwfList.get(i) + " - ");
+            System.out.print(pwfList.get(i).getFlowSeq() +", ");
+            System.out.println(pwfList.get(i).getFlowId());
         }
 
         return pwfList;
@@ -72,6 +74,7 @@ public class ProgWorkFlowMngRepository {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();
             progWorkFlowMng.setFlowId(rs.getLong("flow_id"));
             progWorkFlowMng.setProgId(rs.getLong("prog_id"));
+            progWorkFlowMng.setFlowSeq(rs.getInt("flow_seq"));
             progWorkFlowMng.setFlowType(rs.getString("flow_type"));
             progWorkFlowMng.setFlowAttr(new JSONObject(rs.getString("flow_attr")));
             progWorkFlowMng.setCrtdDttm(rs.getObject("crtd_dttm", LocalDateTime.class));
