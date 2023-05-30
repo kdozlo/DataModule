@@ -43,6 +43,8 @@ public class ProgMstRepository {
                 "set prog_nm=:progNm, prog_desc=:progDesc, view_attr=:viewAttr, use_yn=:useYn, updt_dttm=:updtDttm " +
                 "where prog_id=:progId";
 
+        progMstDto.setUpdtDttm(LocalDateTime.now());
+
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("progNm", progMstDto.getProgNm())
                 .addValue("progDesc", progMstDto.getProgDesc())

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
+import yhdatabase.datamodule.repository.dto.ProgMstDto;
 import yhdatabase.datamodule.service.ProgMstService;
 
 @Slf4j
@@ -26,9 +27,12 @@ public class ProgMstController {
         return "redirect:/project/{progId}";
     }
 
+    @PostMapping("/project/update/{progId}")
+    public int updateProgMst(@RequestBody ProgMstDto progMstDto) {
+        return progMstService.update(progMstDto);
+    }
 
-
-    @PostMapping("/project/{progId}")
+    @PostMapping("/project/delete/{progId}")
     public String deleteProgMst(@PathVariable String progId, RedirectAttributes redirectAttributes) {
         int deleteCnt = progMstService.delete(Long.parseLong(progId));
 
