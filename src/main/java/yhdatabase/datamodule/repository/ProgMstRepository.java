@@ -37,6 +37,8 @@ public class ProgMstRepository {
         return progMst;
     }
 
+
+
     public int delete(Long progId) {
         String sql = "delete from prog_mst where prog_id = :progId";
 

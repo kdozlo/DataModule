@@ -26,6 +26,8 @@ public class ProgMstController {
         return "redirect:/project/{progId}";
     }
 
+
+
     @PostMapping("/project/{progId}")
     public String deleteProgMst(@PathVariable String progId, RedirectAttributes redirectAttributes) {
         int deleteCnt = progMstService.delete(Long.parseLong(progId));
