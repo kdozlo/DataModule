@@ -15,7 +15,7 @@ import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 import java.util.*;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("diagram")
 @RequiredArgsConstructor
 public class NodeController {
@@ -33,8 +33,6 @@ public class NodeController {
 
         return savedProgWorkFlowMng.getFlowId();
     }
-
-
 
     @PostMapping("/project/delete-node/{progId}/{flowId}")
     public int deleteNode(@PathVariable String flowId) {

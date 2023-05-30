@@ -60,7 +60,7 @@ public class ProgWorkFlowMngRepository {
     }
 
     public int delete(Long flowId) {
-        String sql = "delete from prog_work_flow_mng where prog_id = :flowId";
+        String sql = "delete from prog_work_flow_mng where flow_id = :flowId";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("flowId", flowId);
