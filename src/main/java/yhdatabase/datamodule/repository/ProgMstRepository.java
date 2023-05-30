@@ -6,11 +6,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -48,7 +48,7 @@ public class ProgMstRepository {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("progNm", progMstDto.getProgNm())
                 .addValue("progDesc", progMstDto.getProgDesc())
-                .addValue("viewAttr", progMstDto.getViewAttr())
+                .addValue("viewAttr", progMstDto.getViewAttr(), Types.OTHER)
                 .addValue("useYn", progMstDto.getUseYn())
                 .addValue("updtDttm", progMstDto.getUpdtDttm())
                 .addValue("progId", progMstDto.getProgId());

@@ -1,11 +1,14 @@
 package yhdatabase.datamodule.repository.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class ProgMstDto {
     private Long progId;
 
@@ -20,7 +23,8 @@ public class ProgMstDto {
     private LocalDateTime updtDttm;
 
 
-    public ProgMstDto(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn, LocalDateTime updtDttm) {
+    public ProgMstDto(Long progId, String progNm, String progDesc, JSONObject viewAttr, Boolean useYn, LocalDateTime updtDttm) {
+        this.progId = progId;
         this.progNm = progNm;
         this.progDesc = progDesc;
         this.viewAttr = viewAttr;

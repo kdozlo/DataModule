@@ -28,8 +28,11 @@ public class ProgMstController {
     }
 
     @PostMapping("/project/update/{progId}")
-    public int updateProgMst(@RequestBody ProgMstDto progMstDto) {
-        return progMstService.update(progMstDto);
+    public String updateProgMst(@RequestBody ProgMstDto progMstDto) {
+        if (progMstService.update(progMstDto) > 0)
+            return "success";
+        else
+            return "fail";
     }
 
     @PostMapping("/project/delete/{progId}")
@@ -38,7 +41,7 @@ public class ProgMstController {
 
         redirectAttributes.addAttribute("deleteCnt", deleteCnt);
 
-        return "redirect:/project";
+        return "redirect:/diagram";
     }
 
 }
