@@ -17,4 +17,8 @@ public class ProgMstService {
         return progMstRepository.save(progmst);
     }
 
+    @Transactional
+    public int delete(Long progId) {
+        return progMstRepository.delete(progId);}
+
 }
