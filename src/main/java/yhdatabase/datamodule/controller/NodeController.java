@@ -34,6 +34,11 @@ public class NodeController {
         return savedProgWorkFlowMng.getFlowId();
     }
 
+    @PostMapping("/project/update-node/{progId}/{flowId}")
+    public int updateNode(@PathVariable String flowId, @ResponseBody ) {
+        return progWorkFlowMngService.delete(Long.parseLong(flowId));
+    }
+
     @PostMapping("/project/delete-node/{progId}/{flowId}")
     public int deleteNode(@PathVariable String flowId) {
         return progWorkFlowMngService.delete(Long.parseLong(flowId));
