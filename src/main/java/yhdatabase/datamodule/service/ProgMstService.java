@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.ProgMstRepository;
+import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,11 @@ public class ProgMstService {
     @Transactional
     public ProgMst save(ProgMst progmst) {
         return progMstRepository.save(progmst);
+    }
+
+    @Transactional
+    public int update(ProgMstDto progMstDto) {
+        return progMstRepository.update(progMstDto);
     }
 
     @Transactional
