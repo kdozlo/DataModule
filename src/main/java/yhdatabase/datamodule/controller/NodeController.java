@@ -16,11 +16,9 @@ import java.util.*;
 
 @Slf4j
 @Controller
-@RequestMapping("api/diagram")
+@RequestMapping("diagram")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*")
 public class NodeController {
-    private final ProgMstService progMstService;
 
     private final ProgWorkFlowMngService progWorkFlowMngService;
 
@@ -28,16 +26,7 @@ public class NodeController {
 
     private final OutPutTableService outPutTableService;
 
-    @PostMapping("/project")
-    public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
-        ProgMst savedProgMst = progMstService.save(progMst);
-        redirectAttributes.addAttribute("progId", savedProgMst.getProgId());
-        redirectAttributes.addAttribute("crtdDttm", savedProgMst.getCrtdDttm());
-
-        return "redirect:/project/{progId}";
-    }
-
-    @PostMapping("/project/savenode/{progId}")
+    @PostMapping("/project/save-node/{progId}")
     public Long saveProgWorkFlowMng(@RequestBody ProgWorkFlowMng progWorkFlowMng) {
 
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
@@ -45,7 +34,7 @@ public class NodeController {
         return savedProgWorkFlowMng.getFlowId();
     }
 
-    @GetMapping("/project/sqlResult/{progId}")
+    @GetMapping("/project/sql-result/{progId}")
     public List<Map<String, Object>> getResult(@PathVariable String progId){
         List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
 
