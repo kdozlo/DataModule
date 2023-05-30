@@ -2,6 +2,7 @@ package yhdatabase.datamodule.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -18,6 +19,7 @@ public class ProgMstRepository {
 
     private final SimpleJdbcInsert jdbcInsert;
 
+
     public ProgMstRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -33,5 +35,14 @@ public class ProgMstRepository {
         progMst.setProgId(key.longValue());
 
         return progMst;
+    }
+
+    public int delete(Long progId) {
+        String sql = "delete from prog_mst where prog_id = :progId";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("progId", progId);
+
+        return template.update(sql, param);
     }
 }
