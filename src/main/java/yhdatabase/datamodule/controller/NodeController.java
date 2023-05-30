@@ -2,15 +2,11 @@ package yhdatabase.datamodule.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
-import yhdatabase.datamodule.service.OnlineTransIsolService;
+import yhdatabase.datamodule.service.DataProcessService;
 import yhdatabase.datamodule.service.OutPutTableService;
-import yhdatabase.datamodule.service.ProgMstService;
 import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
 import java.util.*;
@@ -23,7 +19,7 @@ public class NodeController {
 
     private final ProgWorkFlowMngService progWorkFlowMngService;
 
-    private final OnlineTransIsolService onlineTransIsolService;
+    private final DataProcessService dataProcessService;
 
     private final OutPutTableService outPutTableService;
 
@@ -56,10 +52,10 @@ public class NodeController {
 
             switch(flowType) {
                 case "select" :
-                    result = onlineTransIsolService.findSQLResult(Optional.of(cur));
+                    result = dataProcessService.findSQLResult(Optional.of(cur));
                     break;
                 case "filter" :
-                    result = onlineTransIsolService.filterSQLResult(result, Optional.of(cur));
+                    result = dataProcessService.filterSQLResult(result, Optional.of(cur));
                     break;
                 case "output" :
                     String tableNm = "table" + "_" + cur.getProgId().toString();

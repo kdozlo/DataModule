@@ -18,7 +18,6 @@ public class OutPutTableService {
         return outPutTableRepository.insertResult(tableNm, result);
     }
 
-
     public String createTable(String tableNm, ProgWorkFlowMng cur) {
         List<String> colList = cur.findColInfo();
         Map<String, String[]> outputCondList = cur.findCondList(colList);

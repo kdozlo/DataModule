@@ -12,10 +12,10 @@ import java.util.Optional;
 
 
 @Slf4j
-public class OnlineTransIsolRepository {
+public class DataProcessRepository {
     private final JdbcTemplate template;
 
-    public OnlineTransIsolRepository(DataSource dataSource) {
+    public DataProcessRepository(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
     }
 

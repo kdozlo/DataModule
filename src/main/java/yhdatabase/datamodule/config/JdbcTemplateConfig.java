@@ -3,7 +3,7 @@ package yhdatabase.datamodule.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import yhdatabase.datamodule.repository.OnlineTransIsolRepository;
+import yhdatabase.datamodule.repository.DataProcessRepository;
 import yhdatabase.datamodule.repository.OutPutTableRepository;
 import yhdatabase.datamodule.repository.ProgMstRepository;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
@@ -26,8 +26,8 @@ public class JdbcTemplateConfig {
     }
 
     @Bean
-    public OnlineTransIsolRepository onlineTransIsolRepository() {
-        return new OnlineTransIsolRepository(dataSource);
+    public DataProcessRepository onlineTransIsolRepository() {
+        return new DataProcessRepository(dataSource);
     }
 
     @Bean

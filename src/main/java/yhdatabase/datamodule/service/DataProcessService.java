@@ -4,20 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
-import yhdatabase.datamodule.repository.OnlineTransIsolRepository;
+import yhdatabase.datamodule.repository.DataProcessRepository;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class OnlineTransIsolService {
+public class DataProcessService {
 
-    private final OnlineTransIsolRepository onlineTransIsolRepository;
+    private final DataProcessRepository dataProcessRepository;
 
     @Transactional
     public List<Map<String, Object>> findSQLResult(Optional<ProgWorkFlowMng> progWorkFlowMng) {
 
-        List<Map<String, Object>> result = onlineTransIsolRepository.findSQLResult(progWorkFlowMng);
+        List<Map<String, Object>> result = dataProcessRepository.findSQLResult(progWorkFlowMng);
 
         System.out.println("findSQLResult");
         for (Map<String, Object> row : result) {
