@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
+import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
 
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -41,20 +42,20 @@ public class ProgWorkFlowMngRepository {
         return progWorkFlowMng;
     }
 
-    public int update(ProgMstDto progMstDto) {
-        String sql = "update prog_mst " + "" +
-                "set prog_nm=:progNm, prog_desc=:progDesc, view_attr=:viewAttr, use_yn=:useYn, updt_dttm=:updtDttm " +
-                "where prog_id=:progId";
+    public int update(ProgWorkFlowMngDto progWorkFlowMngDto) {
+        String sql = "update prog_work_flow_mng " + "" +
+                "set prog_id=:progId, flow_seq=:flowSeq, flow_type=:flowType, flow_attr=:flowAttr, updt_dttm=:updtDttm " +
+                "where flow_id=:flowId";
 
-        progMstDto.setUpdtDttm(LocalDateTime.now());
+        progWorkFlowMngDto.setUpdtdttm(LocalDateTime.now());
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("progNm", progMstDto.getProgNm())
-                .addValue("progDesc", progMstDto.getProgDesc())
-                .addValue("viewAttr", progMstDto.getViewAttr(), Types.OTHER)
-                .addValue("useYn", progMstDto.getUseYn())
-                .addValue("updtDttm", progMstDto.getUpdtDttm())
-                .addValue("progId", progMstDto.getProgId());
+                .addValue("progId", progWorkFlowMngDto.getProgId())
+                .addValue("flowSeq", progWorkFlowMngDto.getFlowSeq())
+                .addValue("flowType", progWorkFlowMngDto.getFlowType())
+                .addValue("flowAttr", progWorkFlowMngDto.getFlowAttr(), Types.OTHER)
+                .addValue("updtDttm", progWorkFlowMngDto.getUpdtdttm())
+                .addValue("flowId", progWorkFlowMngDto.getFlowId());
 
         return template.update(sql, param);
     }

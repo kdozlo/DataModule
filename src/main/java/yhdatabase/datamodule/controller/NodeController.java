@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
+import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
 import yhdatabase.datamodule.service.OnlineTransIsolService;
 import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgMstService;
@@ -35,8 +36,8 @@ public class NodeController {
     }
 
     @PostMapping("/project/update-node/{progId}/{flowId}")
-    public int updateNode(@PathVariable String flowId, @ResponseBody ) {
-        return progWorkFlowMngService.delete(Long.parseLong(flowId));
+    public int updateNode(@RequestBody ProgWorkFlowMngDto progWorkFlowMngDto) {
+        return progWorkFlowMngService.update(progWorkFlowMngDto);
     }
 
     @PostMapping("/project/delete-node/{progId}/{flowId}")

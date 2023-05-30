@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
+import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,10 @@ public class ProgWorkFlowMngService {
     public ProgWorkFlowMng save(ProgWorkFlowMng progWorkFlowMng) {
         return progWorkFlowMngRepository.save(progWorkFlowMng);
     }
+
+    @Transactional
+    public int update(ProgWorkFlowMngDto progWorkFlowMngDto) {
+        return progWorkFlowMngRepository.update(progWorkFlowMngDto);}
 
     @Transactional
     public int delete(Long progId) {
