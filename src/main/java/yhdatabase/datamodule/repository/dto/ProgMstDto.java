@@ -20,8 +20,7 @@ public class ProgMstDto {
     private LocalDateTime updtDttm;
 
 
-    public ProgMstDto(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn,
-                   LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
+    public ProgMstDto(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn, LocalDateTime updtDttm) {
         this.progNm = progNm;
         this.progDesc = progDesc;
         this.viewAttr = viewAttr;

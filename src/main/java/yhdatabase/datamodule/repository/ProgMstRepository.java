@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgMst;
+import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -37,7 +38,21 @@ public class ProgMstRepository {
         return progMst;
     }
 
+    public int update(ProgMstDto progMstDto) {
+        String sql = "update prog_mst " + "" +
+                "set prog_nm=:progNm, prog_desc=:progDesc, view_attr=:viewAttr, use_yn=:useYn, updt_dttm=:updtDttm " +
+                "where prog_id=:progId";
 
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("progNm", progMstDto.getProgNm())
+                .addValue("progDesc", progMstDto.getProgDesc())
+                .addValue("viewAttr", progMstDto.getViewAttr())
+                .addValue("useYn", progMstDto.getUseYn())
+                .addValue("updtDttm", progMstDto.getUpdtDttm())
+                .addValue("progId", progMstDto.getProgId());
+
+        return template.update(sql, param);
+    }
 
     public int delete(Long progId) {
         String sql = "delete from prog_mst where prog_id = :progId";
