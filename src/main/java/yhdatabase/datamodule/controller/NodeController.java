@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
-import yhdatabase.datamodule.repository.ProgWorkFlowMngRepository;
 import yhdatabase.datamodule.service.OnlineTransIsolService;
 import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgMstService;
@@ -39,12 +38,11 @@ public class NodeController {
     }
 
     @PostMapping("/project/savenode/{progId}")
-    public String saveProgWorkFlowMng(@RequestBody ProgWorkFlowMng progWorkFlowMng, RedirectAttributes redirectAttributes) {
+    public Long saveProgWorkFlowMng(@RequestBody ProgWorkFlowMng progWorkFlowMng) {
 
         ProgWorkFlowMng savedProgWorkFlowMng = progWorkFlowMngService.save(progWorkFlowMng);
-        redirectAttributes.addAttribute("flowId", savedProgWorkFlowMng.getFlowId());
 
-        return "redirect:/project/sqlResult/{progId}/{flowId}";
+        return savedProgWorkFlowMng.getFlowId();
     }
 
     @GetMapping("/project/sqlResult/{progId}")
