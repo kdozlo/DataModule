@@ -21,6 +21,10 @@ public class ProgWorkFlowMngService {
     }
 
     @Transactional
+    public int delete(Long progId) {
+        return progWorkFlowMngRepository.delete(progId);}
+
+    @Transactional
     public Optional<ProgWorkFlowMng> findById(Long flowId) {
         return progWorkFlowMngRepository.findById(flowId);
     }

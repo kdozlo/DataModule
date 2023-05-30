@@ -5,12 +5,15 @@ import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
+import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -37,6 +40,34 @@ public class ProgWorkFlowMngRepository {
 
         return progWorkFlowMng;
     }
+
+    public int update(ProgMstDto progMstDto) {
+        String sql = "update prog_mst " + "" +
+                "set prog_nm=:progNm, prog_desc=:progDesc, view_attr=:viewAttr, use_yn=:useYn, updt_dttm=:updtDttm " +
+                "where prog_id=:progId";
+
+        progMstDto.setUpdtDttm(LocalDateTime.now());
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("progNm", progMstDto.getProgNm())
+                .addValue("progDesc", progMstDto.getProgDesc())
+                .addValue("viewAttr", progMstDto.getViewAttr(), Types.OTHER)
+                .addValue("useYn", progMstDto.getUseYn())
+                .addValue("updtDttm", progMstDto.getUpdtDttm())
+                .addValue("progId", progMstDto.getProgId());
+
+        return template.update(sql, param);
+    }
+
+    public int delete(Long flowId) {
+        String sql = "delete from prog_work_flow_mng where prog_id = :flowId";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("flowId", flowId);
+
+        return template.update(sql, param);
+    }
+
 
     public Optional<ProgWorkFlowMng> findById(Long flowId) {
         String sql = "select * from prog_work_flow_mng where flow_id = :flowId";

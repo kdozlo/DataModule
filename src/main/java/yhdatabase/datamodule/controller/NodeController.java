@@ -34,6 +34,13 @@ public class NodeController {
         return savedProgWorkFlowMng.getFlowId();
     }
 
+
+
+    @PostMapping("/project/delete-node/{progId}/{flowId}")
+    public int deleteNode(@PathVariable String flowId) {
+        return progWorkFlowMngService.delete(Long.parseLong(flowId));
+    }
+
     @GetMapping("/project/sql-result/{progId}")
     public List<Map<String, Object>> getResult(@PathVariable String progId){
         List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
