@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
-import yhdatabase.datamodule.repository.dto.ProgMstDto;
 import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
 
 import javax.sql.DataSource;
