@@ -1,20 +1,34 @@
 package yhdatabase.datamodule.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgMst;
+import yhdatabase.datamodule.repository.dto.ProgMst2;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 public class ProgMstRepository {
+
+    // 추가한 부분
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private final NamedParameterJdbcTemplate template;
 
@@ -63,5 +77,33 @@ public class ProgMstRepository {
                 .addValue("progId", progId);
 
         return template.update(sql, param);
+    }
+
+    public ProgMst2 load(Long progId) {
+        String sql = "SELECT * FROM prog_mst WHERE prog_id = :progId";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("progId", progId);
+
+        try {
+            ProgMst2 result = template.queryForObject(
+                    sql,
+                    param,
+                    (rs, rowNum) -> new ProgMst2(
+                            rs.getLong("prog_id"),
+                            rs.getString("prog_nm"),
+                            rs.getString("prog_desc"),
+                            rs.getString("view_attr"), // JSON data handled as string
+                            rs.getBoolean("use_yn"),
+                            rs.getTimestamp("crtd_dttm").toLocalDateTime(),
+                            rs.getTimestamp("updt_dttm") != null ? rs.getTimestamp("updt_dttm").toLocalDateTime() : null,
+                            rs.getTimestamp("dlt_dttm") != null ? rs.getTimestamp("dlt_dttm").toLocalDateTime() : null
+                    )
+            );
+            System.out.println(result.getViewAttr());
+            return result;
+        } catch (DataAccessException ex) {
+            throw new IllegalArgumentException("No ProgMst found with progId: " + progId);
+        }
     }
 }

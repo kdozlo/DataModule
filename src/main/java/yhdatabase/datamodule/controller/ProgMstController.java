@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
+import yhdatabase.datamodule.repository.dto.ProgMst2;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 import yhdatabase.datamodule.service.ProgMstService;
 
@@ -17,13 +18,22 @@ public class ProgMstController {
 
     private final ProgMstService progMstService;
 
+//    @PostMapping("/project")
+//    public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
+//        ProgMst savedProgMst = progMstService.save(progMst);
+//        redirectAttributes.addAttribute("progId", savedProgMst.getProgId());
+//        redirectAttributes.addAttribute("crtdDttm", savedProgMst.getCrtdDttm());
+//
+//        return "redirect:/project/{progId}";
+//    }
+
     @PostMapping("/project")
-    public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
+    public long saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
         ProgMst savedProgMst = progMstService.save(progMst);
         redirectAttributes.addAttribute("progId", savedProgMst.getProgId());
         redirectAttributes.addAttribute("crtdDttm", savedProgMst.getCrtdDttm());
 
-        return "redirect:/project/{progId}";
+        return savedProgMst.getProgId();
     }
 
     @PostMapping("/project/update/{progId}")
@@ -43,4 +53,8 @@ public class ProgMstController {
         return "redirect:/diagram";
     }
 
+    @PostMapping("/project/load/{progId}")
+    public ProgMst2 loadProgMst(@PathVariable String progId) {
+        return progMstService.load(Long.parseLong(progId));
+    }
 }

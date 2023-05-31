@@ -1,4 +1,4 @@
-package yhdatabase.datamodule.domain;
+package yhdatabase.datamodule.repository.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ProgMst {
+public class ProgMst2 {
     private Long progId;
 
     private String progNm;
 
     private String progDesc;
 
-    private JSONObject viewAttr;
+    private String viewAttr;
 
     private Boolean useYn;
 
@@ -25,19 +25,7 @@ public class ProgMst {
 
     private LocalDateTime dltDttm;
 
-    public ProgMst() {}
-    public ProgMst(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn,
-                   LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
-        this.progNm = progNm;
-        this.progDesc = progDesc;
-        this.viewAttr = viewAttr;
-        this.useYn = useYn;
-        this.crtdDttm = crtdDttm;
-        this.updtDttm = updtDttm;
-        this.dltDttm = dltDttm;
-    }
-
-    public ProgMst(long progId, String progNm, String progDesc, JSONObject viewAttr, Boolean useYn,
+    public ProgMst2(long progId, String progNm, String progDesc, String viewAttr, Boolean useYn,
                    LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
         this.progId = progId;
         this.progNm = progNm;

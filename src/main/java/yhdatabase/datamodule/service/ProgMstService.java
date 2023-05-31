@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.ProgMstRepository;
+import yhdatabase.datamodule.repository.dto.ProgMst2;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 @Service
@@ -27,4 +28,7 @@ public class ProgMstService {
     public int delete(Long progId) {
         return progMstRepository.delete(progId);}
 
+    @Transactional
+    public ProgMst2 load(Long progId) {
+        return progMstRepository.load(progId);}
 }
