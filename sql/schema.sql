@@ -47,23 +47,9 @@ CREATE TABLE public.online_trans_isol (
 
 CREATE TABLE public.online_trans_isol_to (
 	idx int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	user_no numeric(13) NOT NULL,
 	trans_id varchar(20) NOT NULL,
 	ymd varchar(8) NOT NULL,
-	hhmissff varchar(6) NOT NULL,
-	out_pay_bcd varchar(3) NULL,
-	out_pay_acc varchar(40) NULL,
 	out_paying_name varchar(30) NULL,
-	in_pay_bcd varchar(3) NULL,
-	in_pay_acc varchar(40) NULL,
-	in_pay_name varchar(30) NULL,
-	tot_amt numeric(38) NULL,
-	balance numeric(38) NULL,
-	acct_desc varchar(255) NULL,
-	acct_type varchar(2) NULL,
-	user_type varchar(2) NULL,
-	device_info text NULL,
-	inpt_dttm timestamp(0) NULL,
 	grade varchar(15) NOT NULL,
-	CONSTRAINT pk_online_trans_isol PRIMARY KEY (idx)
+	CONSTRAINT pk_online_trans_isol_to PRIMARY KEY (idx)
 );
