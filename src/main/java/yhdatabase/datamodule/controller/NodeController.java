@@ -58,9 +58,12 @@ public class NodeController {
                     result = dataProcessService.filterSQLResult(result, Optional.of(cur));
                     break;
                 case "output" :
-                    String tableNm = "table" + "_" + cur.getProgId().toString();
-                    outPutTableService.createTable(tableNm, cur);
-                    System.out.println("insert 개수 : " + outPutTableService.insertResult(tableNm, result));
+                    //String tableNm = "table" + "_" + cur.getProgId().toString();
+                    //outPutTableService.createTable(tableNm, cur);
+                    //System.out.println("insert 개수 : " + outPutTableService.insertResult(tableNm, result));
+
+
+
                     break;
             }
         }

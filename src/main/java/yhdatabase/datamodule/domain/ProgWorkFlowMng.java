@@ -51,7 +51,7 @@ public class ProgWorkFlowMng {
         return this.flowAttr.getString("sql");
     }
 
-    //findColInfo
+    //filter node, output node - find col_info
     public List<String> findColInfo() {
         List<String> colList = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class ProgWorkFlowMng {
         return colList;
     }
 
-    //filter node, output node - findCondList
+    //filter node, output node - find col_info 조건 배열 찾기, [필터 조건, 필터 조건 값, 메모] / [기본값, 매핑필드]
     public Map<String, String[]> findCondList(List<String> colList) {
         Map<String, String[]> filterCondList = new HashMap<>();
 
@@ -80,6 +80,21 @@ public class ProgWorkFlowMng {
         }
 
         return filterCondList;
+    }
+
+    //output node - find type(insert, update, delete)
+    public String findType() {
+        return this.flowAttr.getString("type");
+    }
+
+    //output node - find pk
+    public String findPk() {
+        return this.flowAttr.getString("pk");
+    }
+
+    //output node - find table_name
+    public String findTableName() {
+        return this.flowAttr.getString("table_name");
     }
 
 }
