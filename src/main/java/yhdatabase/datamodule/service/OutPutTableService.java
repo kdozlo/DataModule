@@ -14,8 +14,31 @@ public class OutPutTableService {
 
     private final OutPutTableRepository outPutTableRepository;
 
-    public int insertResult(String tableNm, List<Map<String, Object>> result) {
-        return outPutTableRepository.insertResult(tableNm, result);
+    public int processResult(List<Map<String, Object>> result, ProgWorkFlowMng cur) {
+        int resultNum = 0;
+        String type = cur.findType();
+        String tableNm = cur.findTableName();
+        List<String> colInfo = cur.findColInfo();
+        Map<String, String[]> condList = cur.findCondList(colInfo);
+
+        switch(type) {
+            case "insert" :
+                resultNum = outPutTableRepository.insertResult(result, tableNm, condList);
+
+                break;
+            case "update" :
+
+                break;
+            case "delete" :
+
+                break;
+        }
+
+        return resultNum;
+    }
+
+    public int insertResultToCreateTable(String tableNm, List<Map<String, Object>> result) {
+        return outPutTableRepository.insertResultToCreateTable(tableNm, result);
     }
 
     public String createTable(String tableNm, ProgWorkFlowMng cur) {
@@ -38,4 +61,6 @@ public class OutPutTableService {
 
         return tableNm;
     }
+
+
 }
