@@ -42,9 +42,9 @@ public class OutPutTableRepository {
                 String column = s;
                 Object value;
 
-                String field = condList.get(s)[2];
+                String field = condList.get(s)[1];
                 if (field.equals("")) {
-                    value = condList.get(s)[2];
+                    value = condList.get(s)[0];
                 } else {
                     value = row.get(field);
                 }
