@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
+import yhdatabase.datamodule.repository.dto.ResponseProgMstDto;
 
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -103,11 +104,6 @@ public class ProgWorkFlowMngRepository {
     }
 
     private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
-        return BeanPropertyRowMapper.newInstance(ProgWorkFlowMng.class); //camel 변환 지원
-    }
-
-
-    /*private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
         return ((rs, rowNum) -> {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();
             progWorkFlowMng.setFlowId(rs.getLong("flow_id"));
@@ -120,5 +116,5 @@ public class ProgWorkFlowMngRepository {
             progWorkFlowMng.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));
             return progWorkFlowMng;
         });
-    }*/
+    }
 }

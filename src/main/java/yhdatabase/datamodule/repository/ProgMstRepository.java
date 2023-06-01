@@ -1,6 +1,7 @@
 package yhdatabase.datamodule.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
+import yhdatabase.datamodule.repository.dto.ResponseProgMstDto;
 
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -43,13 +45,13 @@ public class ProgMstRepository {
         return progMst;
     }
 
-    public Optional<ProgMst> findById(Long progId) {
+    public Optional<ResponseProgMstDto> findById(Long progId) {
         String sql = "select * from prog_mst where prog_id = :progId";
 
         try {
             Map<String, Object> param = Map.of("progId", progId);
-            ProgMst pogMst = template.queryForObject(sql, param, progMstRowMapper());
-            return Optional.of(pogMst);
+            ResponseProgMstDto responseProgMstDto = template.queryForObject(sql, param, ResponseProgMstDtoRowMapper());
+            return Optional.of(responseProgMstDto);
         } catch (EmptyResultDataAccessException e) {
             log.info("Optional<pogMst>.empty(), prog_id={}", progId);
             return Optional.empty();
@@ -83,21 +85,21 @@ public class ProgMstRepository {
         return template.update(sql, param);
     }
 
-    private RowMapper<ProgMst> progMstRowMapper() {
-        return BeanPropertyRowMapper.newInstance(ProgMst.class); //camel 변환 지원
+    private RowMapper<ResponseProgMstDto> ResponseProgMstDtoRowMapper() {
+        return BeanPropertyRowMapper.newInstance(ResponseProgMstDto.class);
     }
 
-    /*private RowMapper<ProgMst> progMstRowMapper() {
+    private RowMapper<ProgMst> progMstRowMapper() {
         return ((rs, rowNum) -> {
             ProgMst progMst = new ProgMst();
             progMst.setProgId(rs.getLong("prog_id"));
             progMst.setProgNm(rs.getString("prog_nm"));
-            progMst.setProgDesc(rs.getString("prog_deesc"));
+            progMst.setProgDesc(rs.getString("prog_desc"));
             progMst.setViewAttr(new JSONObject(rs.getString("view_attr")));
             progMst.setCrtdDttm(rs.getObject("crtd_dttm", LocalDateTime.class));
             progMst.setUpdtDttm(rs.getObject("updt_dttm", LocalDateTime.class));
             progMst.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));
             return progMst;
         });
-    }*/
+    }
 }

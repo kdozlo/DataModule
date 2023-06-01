@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.ProgMstRepository;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
+import yhdatabase.datamodule.repository.dto.ResponseProgMstDto;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class ProgMstService {
     }
 
     @Transactional
-    public Optional<ProgMst> findById(Long progId) {
+    public Optional<ResponseProgMstDto> findById(Long progId) {
         return progMstRepository.findById(progId);
     }
 

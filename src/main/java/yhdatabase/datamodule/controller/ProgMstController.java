@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
+import yhdatabase.datamodule.repository.dto.ResponseProgMstDto;
 import yhdatabase.datamodule.service.ProgMstService;
 
 import java.util.Optional;
@@ -20,16 +21,15 @@ public class ProgMstController {
     private final ProgMstService progMstService;
 
     @PostMapping("/project")
-    public String saveProgMst(@RequestBody ProgMst progMst, RedirectAttributes redirectAttributes) {
+    public Long saveProgMst(@RequestBody ProgMst progMst) {
         ProgMst savedProgMst = progMstService.save(progMst);
-        redirectAttributes.addAttribute("progId", savedProgMst.getProgId());
-        redirectAttributes.addAttribute("crtdDttm", savedProgMst.getCrtdDttm());
 
-        return "redirect:/project/{progId}";
+
+        return savedProgMst.getProgId();
     }
 
     @PostMapping("/project/load/{progId}")
-    public Optional<ProgMst> loadProgMst(@PathVariable String progId) {
+    public Optional<ResponseProgMstDto> loadProgMst(@PathVariable String progId) {
         return progMstService.findById(Long.parseLong(progId));
     }
 
@@ -42,12 +42,12 @@ public class ProgMstController {
     }
 
     @PostMapping("/project/delete/{progId}")
-    public String deleteProgMst(@PathVariable String progId, RedirectAttributes redirectAttributes) {
-        int deleteCnt = progMstService.delete(Long.parseLong(progId));
+    public String deleteProgMst(@PathVariable String progId) {
 
-        redirectAttributes.addAttribute("deleteCnt", deleteCnt);
-
-        return "redirect:/diagram";
+        if (progMstService.delete(Long.parseLong(progId)) > 0)
+            return "success";
+        else
+            return "fail";
     }
 
 }
