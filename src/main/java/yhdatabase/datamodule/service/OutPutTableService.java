@@ -14,7 +14,7 @@ public class OutPutTableService {
 
     private final OutPutTableRepository outPutTableRepository;
 
-    public int processResult(List<Map<String, Object>> result, ProgWorkFlowMng cur) {
+    public int processOutputNode(List<Map<String, Object>> result, ProgWorkFlowMng cur) {
         int resultNum = 0;
         String type = cur.findType();
         String tableNm = cur.findTableName();
