@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +106,20 @@ public class OutPutTableRepository {
         return resultNum;
     }
 
+    public int deleteResult(List<Map<String, Object>> result, String tableNm, List<String> pk) {
+        int resultNum = 0;
 
+        for(Map<String, Object> row : result) {
+
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+            StringBuilder deleteQuery = new StringBuilder("DELETE FROM " + tableNm + " WHERE " + pk.get(1) + " = :" + pk.get(1));
+
+            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+            resultNum += template.update(deleteQuery.toString(), parameterSource);
+        }
+
+        return resultNum;
+    }
 
     public String createTable(String sql) {
         template.getJdbcTemplate().execute(sql);

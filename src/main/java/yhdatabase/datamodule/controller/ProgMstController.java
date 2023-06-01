@@ -24,7 +24,6 @@ public class ProgMstController {
     public Long saveProgMst(@RequestBody ProgMst progMst) {
         ProgMst savedProgMst = progMstService.save(progMst);
 
-
         return savedProgMst.getProgId();
     }
 
