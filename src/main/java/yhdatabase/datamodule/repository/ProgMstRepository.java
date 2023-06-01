@@ -1,8 +1,8 @@
 package yhdatabase.datamodule.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import yhdatabase.datamodule.domain.ProgMst;
-import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
 import javax.sql.DataSource;
@@ -85,6 +84,10 @@ public class ProgMstRepository {
     }
 
     private RowMapper<ProgMst> progMstRowMapper() {
+        return BeanPropertyRowMapper.newInstance(ProgMst.class); //camel 변환 지원
+    }
+
+    /*private RowMapper<ProgMst> progMstRowMapper() {
         return ((rs, rowNum) -> {
             ProgMst progMst = new ProgMst();
             progMst.setProgId(rs.getLong("prog_id"));
@@ -96,5 +99,5 @@ public class ProgMstRepository {
             progMst.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));
             return progMst;
         });
-    }
+    }*/
 }

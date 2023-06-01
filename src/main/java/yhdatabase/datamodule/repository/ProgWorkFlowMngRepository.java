@@ -3,12 +3,14 @@ package yhdatabase.datamodule.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
 
@@ -101,6 +103,11 @@ public class ProgWorkFlowMngRepository {
     }
 
     private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
+        return BeanPropertyRowMapper.newInstance(ProgWorkFlowMng.class); //camel 변환 지원
+    }
+
+
+    /*private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
         return ((rs, rowNum) -> {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();
             progWorkFlowMng.setFlowId(rs.getLong("flow_id"));
@@ -113,5 +120,5 @@ public class ProgWorkFlowMngRepository {
             progWorkFlowMng.setDltDttm(rs.getObject("dlt_dttm", LocalDateTime.class));
             return progWorkFlowMng;
         });
-    }
+    }*/
 }

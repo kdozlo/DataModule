@@ -1,15 +1,10 @@
 package yhdatabase.datamodule.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
-import java.sql.Types;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,11 +12,9 @@ import java.util.Set;
 @Slf4j
 public class OutPutTableRepository {
 
-    private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate template;
 
     public OutPutTableRepository(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -115,7 +108,7 @@ public class OutPutTableRepository {
 
 
     public String createTable(String sql) {
-        jdbcTemplate.execute(sql);
+        template.getJdbcTemplate().execute(sql);
 
         return sql;
     }
