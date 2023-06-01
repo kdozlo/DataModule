@@ -7,6 +7,8 @@ import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.ProgMstRepository;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ProgMstService {
@@ -16,6 +18,11 @@ public class ProgMstService {
     @Transactional
     public ProgMst save(ProgMst progmst) {
         return progMstRepository.save(progmst);
+    }
+
+    @Transactional
+    public Optional<ProgMst> findById(Long progId) {
+        return progMstRepository.findById(progId);
     }
 
     @Transactional

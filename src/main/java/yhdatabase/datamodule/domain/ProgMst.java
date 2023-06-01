@@ -25,6 +25,10 @@ public class ProgMst {
 
     private LocalDateTime dltDttm;
 
+    public ProgMst() {
+
+    }
+
     public ProgMst(String progNm, String progDesc, JSONObject viewAttr, Boolean useYn,
                    LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
         this.progNm = progNm;

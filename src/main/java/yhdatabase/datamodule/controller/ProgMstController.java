@@ -9,6 +9,8 @@ import yhdatabase.datamodule.domain.ProgMst;
 import yhdatabase.datamodule.repository.dto.ProgMstDto;
 import yhdatabase.datamodule.service.ProgMstService;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController
 @RequestMapping("diagram")
@@ -24,6 +26,11 @@ public class ProgMstController {
         redirectAttributes.addAttribute("crtdDttm", savedProgMst.getCrtdDttm());
 
         return "redirect:/project/{progId}";
+    }
+
+    @PostMapping("/project/load/{progId}")
+    public Optional<ProgMst> loadProgMst(@PathVariable String progId) {
+        return progMstService.findById(Long.parseLong(progId));
     }
 
     @PostMapping("/project/update/{progId}")
