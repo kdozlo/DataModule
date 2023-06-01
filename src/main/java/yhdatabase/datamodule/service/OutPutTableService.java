@@ -27,7 +27,8 @@ public class OutPutTableService {
 
                 break;
             case "update" :
-
+                List<String> pk = cur.findPk();
+                resultNum = outPutTableRepository.updateResult( result, tableNm, condList, pk);
                 break;
             case "delete" :
 

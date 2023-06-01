@@ -88,8 +88,16 @@ public class ProgWorkFlowMng {
     }
 
     //output node - find pk
-    public String findPk() {
-        return this.flowAttr.getString("pk");
+    public List<String> findPk() {
+        List<String> pk = new ArrayList<>();
+
+        JSONArray colJsonArray = (JSONArray) this.flowAttr.get("pk");
+
+        for(Object s : colJsonArray) {
+            pk.add(s.toString());
+        }
+
+        return pk;
     }
 
     //output node - find table_name

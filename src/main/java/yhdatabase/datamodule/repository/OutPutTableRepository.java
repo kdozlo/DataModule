@@ -1,14 +1,15 @@
 package yhdatabase.datamodule.repository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import yhdatabase.datamodule.domain.ProgWorkFlowMng;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
+import java.sql.Types;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,10 +66,53 @@ public class OutPutTableRepository {
 
         }
 
+        return resultNum;
+    }
+
+    public int updateResult(List<Map<String, Object>> result,
+                            String tableNm, Map<String, String[]> condList, List<String> pk) {
+        int resultNum = 0;
+        Set<String> condListKey = condList.keySet();
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+
+        for(Map<String, Object> row : result) {
+            StringBuilder updateQuery = new StringBuilder("UPDATE " + tableNm + " SET ");
+
+            for(String s : condListKey) {
+                if(s.equals(pk.get(1)))
+                    continue;
+                String column = s;
+                Object value;
+
+                String field = condList.get(s)[1];
+                if (field.equals("")) {
+                    value = condList.get(s)[0];
+                } else {
+                    value = row.get(field);
+                    System.out.println(field + "" + value);
+                }
+
+                updateQuery.append(column).append(" = :").append(column).append(", ");
+                parameterSource.addValue(column, value);
+            }
+
+            System.out.println();
+            updateQuery.setLength(updateQuery.length() - 2);
+
+            updateQuery.append(" WHERE ").append(pk.get(1)).append(" = :").append(pk.get(1));
+            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+
+            System.out.println(updateQuery);
+
+            resultNum += template.update(updateQuery.toString(), parameterSource);
+        }
 
 
         return resultNum;
     }
+
+
 
     public String createTable(String sql) {
         jdbcTemplate.execute(sql);
