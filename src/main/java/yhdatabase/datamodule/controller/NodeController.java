@@ -61,13 +61,14 @@ public class NodeController {
                     //String tableNm = "table" + "_" + cur.getProgId().toString();
                     //outPutTableService.createTable(tableNm, cur);
                     //System.out.println("insert 개수 : " + outPutTableService.insertResultToCreateTable(tableNm, result));
-                    System.out.println("개수 : " + outPutTableService.processOutputNode(result, cur));
+                    System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
 
                     break;
             }
         }
 
-
+        //필터노드 정보까지만 있음.
+        // 필터 노드를 insert/update/delete 처리하여, 다른 테이블에 옮긴 정보들은 옮긴 디비 테이블에서 확인 가능. 여기서는 몇개 처리됬는지만 반환.
         System.out.println("컨트롤러 후");
         for (Map<String, Object> row : result) {
             for( String key : row.keySet() ){

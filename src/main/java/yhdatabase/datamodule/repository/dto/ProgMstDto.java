@@ -1,7 +1,6 @@
 package yhdatabase.datamodule.repository.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONObject;
 
