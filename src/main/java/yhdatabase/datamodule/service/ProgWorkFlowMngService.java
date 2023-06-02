@@ -39,4 +39,13 @@ public class ProgWorkFlowMngService {
         return progWorkFlowMngRepository.findByProgId(progId);
     }
 
+    @Transactional
+    public List<String> getTables(){
+        return progWorkFlowMngRepository.getTables();
+    }
+
+    @Transactional
+    public List<String> getTableCols(String table_name){
+        return progWorkFlowMngRepository.getTableCols(table_name);
+    }
 }

@@ -82,4 +82,13 @@ public class NodeController {
         return result;
     }
 
+    @GetMapping("project/get-tables")
+    public List<String> getTables(){
+        return progWorkFlowMngService.getTables();
+    }
+
+    @GetMapping("project/{table_name}")
+    public List<String> getTableCols(@PathVariable String table_name){
+        return progWorkFlowMngService.getTableCols(table_name);
+    }
 }
