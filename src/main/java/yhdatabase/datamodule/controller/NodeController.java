@@ -9,7 +9,10 @@ import yhdatabase.datamodule.service.DataProcessService;
 import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -47,19 +50,39 @@ public class NodeController {
 
         List<Map<String, Object>> result = null;
 
+        Long start;
+        Long end;
+
         for (ProgWorkFlowMng cur : nodeList) {
             String flowType = cur.getFlowType();
 
             switch(flowType) {
                 case "select" :
+                    start = System.currentTimeMillis();
+
                     result = dataProcessService.findSQLResult(Optional.of(cur));
+
+                    end = System.currentTimeMillis();
+                    System.out.print("SQL node - ");
+                    timeDiff(start, end);
                     break;
                 case "filter" :
+                    start = System.currentTimeMillis();
+
                     result = dataProcessService.filterSQLResult(result, Optional.of(cur));
+
+                    end = System.currentTimeMillis();
+                    System.out.print("SQL node - ");
+                    timeDiff(start, end);
                     break;
                 case "output" :
+                    start = System.currentTimeMillis();
+
                     System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
 
+                    end = System.currentTimeMillis();
+                    System.out.print("SQL node - ");
+                    timeDiff(start, end);
                     break;
             }
         }
@@ -79,4 +102,13 @@ public class NodeController {
         return result;
     }
 
+
+    public void timeDiff(Long start, Long end) {
+        long executionTimeMillis = start - end;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(executionTimeMillis) % 60;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(executionTimeMillis) % 60;
+        long hours = TimeUnit.MILLISECONDS.toHours(executionTimeMillis);
+
+        System.out.println("실행 시간: " + hours + "시간 " + minutes + "분 " + seconds + "초");
+    }
 }
