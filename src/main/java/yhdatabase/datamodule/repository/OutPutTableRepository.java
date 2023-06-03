@@ -21,42 +21,11 @@ public class OutPutTableRepository {
     public int insertResult(List<Map<String, Object>> result,
                             String tableNm, Map<String, String[]> condList) {
         int resultNum = 0;
-        Set<String> condListKey = condList.keySet();
+        String sql = generateInsertSql(tableNm, condList.keySet());
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-
-        for(Map<String, Object> row : result) {
-            // 컬럼 목록 추출
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append(tableNm + " (");
-            StringBuilder columns = new StringBuilder();
-            StringBuilder values = new StringBuilder();
-
-            for(String s : condListKey) {
-                String column = s;
-                Object value;
-
-                String field = condList.get(s)[1];
-                if (field.equals("")) {
-                    value = condList.get(s)[0];
-                } else {
-                    value = row.get(field);
-                }
-
-                columns.append(column).append(", ");
-                values.append(":").append(column).append(", ");
-
-                parameterSource.addValue(column, value);
-            }
-
-            // 마지막 쉼표 제거
-            columns.delete(columns.length() - 2, columns.length());
-            values.delete(values.length() - 2, values.length());
-
-            sql.append(columns).append(") VALUES (").append(values).append(")");
-
-            resultNum += template.update(sql.toString(), parameterSource);
-
+        for (Map<String, Object> row : result) {
+            MapSqlParameterSource parameterSource = setParameters(condList, row);
+            resultNum += template.update(sql, parameterSource);
         }
 
         return resultNum;
@@ -65,102 +34,89 @@ public class OutPutTableRepository {
     public int updateResult(List<Map<String, Object>> result,
                             String tableNm, Map<String, String[]> condList, List<String> pk) {
         int resultNum = 0;
-        Set<String> condListKey = condList.keySet();
+        String sql = generateUpdateSql(tableNm, condList.keySet(), pk.get(1));
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-
-        for(Map<String, Object> row : result) {
-            StringBuilder updateQuery = new StringBuilder("UPDATE " + tableNm + " SET ");
-
-            for(String s : condListKey) {
-                if(s.equals(pk.get(1)))
-                    continue;
-                String column = s;
-                Object value;
-
-                String field = condList.get(s)[1];
-                if (field.equals("")) {
-                    value = condList.get(s)[0];
-                } else {
-                    value = row.get(field);
-                    System.out.println(field + "" + value);
-                }
-
-                updateQuery.append(column).append(" = :").append(column).append(", ");
-                parameterSource.addValue(column, value);
-            }
-
-            System.out.println();
-            updateQuery.setLength(updateQuery.length() - 2);
-
-            updateQuery.append(" WHERE ").append(pk.get(1)).append(" = :").append(pk.get(1));
+        for (Map<String, Object> row : result) {
+            MapSqlParameterSource parameterSource = setParameters(condList, row);
             parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-
-            System.out.println(updateQuery);
-
-            resultNum += template.update(updateQuery.toString(), parameterSource);
+            resultNum += template.update(sql, parameterSource);
         }
-
 
         return resultNum;
     }
 
     public int deleteResult(List<Map<String, Object>> result, String tableNm, List<String> pk) {
         int resultNum = 0;
+        String sql = generateDeleteSql(tableNm, pk.get(1));
 
-        for(Map<String, Object> row : result) {
-
+        for (Map<String, Object> row : result) {
             MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            StringBuilder deleteQuery = new StringBuilder("DELETE FROM " + tableNm + " WHERE " + pk.get(1) + " = :" + pk.get(1));
-
             parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-            resultNum += template.update(deleteQuery.toString(), parameterSource);
+            resultNum += template.update(sql, parameterSource);
         }
 
         return resultNum;
     }
 
-    //output node json 형식 변경으로 현재 사용 불가
-    public String createTable(String sql) {
-        template.getJdbcTemplate().execute(sql);
+    private String generateInsertSql(String tableNm, Set<String> condListKey) {
+        StringBuilder sql = new StringBuilder("INSERT INTO ");
+        sql.append(tableNm).append(" (");
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
 
-        return sql;
+        for (String column : condListKey) {
+            columns.append(column).append(", ");
+            values.append(":").append(column).append(", ");
+        }
+
+        // 마지막 쉼표 제거
+        columns.delete(columns.length() - 2, columns.length());
+        values.delete(values.length() - 2, values.length());
+
+        sql.append(columns).append(") VALUES (").append(values).append(")");
+
+        return sql.toString();
     }
 
-    //output node json 형식 변경으로 현재 사용 불가
-    public int insertResultToCreateTable(String tableNm, List<Map<String, Object>> result) {
-        int resultNum = 0;
+    private String generateUpdateSql(String tableNm, Set<String> condListKey, String pkColumn) {
+        StringBuilder sql = new StringBuilder("UPDATE ");
+        sql.append(tableNm).append(" SET ");
+        StringBuilder setClause = new StringBuilder();
 
+        for (String column : condListKey) {
+            if (column.equals(pkColumn)) {
+                continue;
+            }
+            setClause.append(column).append(" = :").append(column).append(", ");
+        }
+
+        // 마지막 쉼표 제거
+        setClause.delete(setClause.length() - 2, setClause.length());
+
+        sql.append(setClause).append(" WHERE ").append(pkColumn).append(" = :").append(pkColumn);
+
+        return sql.toString();
+    }
+
+    private String generateDeleteSql(String tableNm, String pkColumn) {
+        StringBuilder sql = new StringBuilder("DELETE FROM ");
+        sql.append(tableNm).append(" WHERE ").append(pkColumn).append(" = :").append(pkColumn);
+        return sql.toString();
+    }
+
+    private MapSqlParameterSource setParameters(Map<String, String[]> condList, Map<String, Object> row) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 
-        for(Map<String, Object> row : result) {
-            // 컬럼 목록 추출
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append("public." + tableNm + " (");
-            StringBuilder columns = new StringBuilder();
-            StringBuilder values = new StringBuilder();
+        for (Map.Entry<String, String[]> entry : condList.entrySet()) {
+            String column = entry.getKey();
+            String[] condArray = entry.getValue();
+            String defaultValue = condArray[0];
+            String field = condArray[1];
 
-            for (Map.Entry<String, Object> entry : row.entrySet()) {
-                String column = entry.getKey();
-                Object value = entry.getValue();
-
-                columns.append(column).append(", ");
-                values.append(":").append(column).append(", ");
-
-                parameterSource.addValue(column, value);
-            }
-
-            // 마지막 쉼표 제거
-            columns.delete(columns.length() - 2, columns.length());
-            values.delete(values.length() - 2, values.length());
-
-            sql.append(columns).append(") VALUES (").append(values).append(")");
-
-            resultNum += template.update(sql.toString(), parameterSource);
-
+            Object value = (field.equals("")) ? defaultValue : row.get(field);
+            parameterSource.addValue(column, value);
         }
 
-        return resultNum;
+        return parameterSource;
     }
-
 }
