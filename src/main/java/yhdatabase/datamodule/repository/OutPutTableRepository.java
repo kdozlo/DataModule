@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class OutPutTableRepository {
 
     private final NamedParameterJdbcTemplate template;
+    private static final int BATCH_SIZE = 1000;
 
     public OutPutTableRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -23,9 +25,9 @@ public class OutPutTableRepository {
         int resultNum = 0;
         String sql = generateInsertSql(tableNm, condList.keySet());
 
-        for (Map<String, Object> row : result) {
-            MapSqlParameterSource parameterSource = setParameters(condList, row);
-            resultNum += template.update(sql, parameterSource);
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            List<MapSqlParameterSource> parameterSources = setBatchParameters(condList, batch);
+            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
         }
 
         return resultNum;
@@ -36,10 +38,12 @@ public class OutPutTableRepository {
         int resultNum = 0;
         String sql = generateUpdateSql(tableNm, condList.keySet(), pk.get(1));
 
-        for (Map<String, Object> row : result) {
-            MapSqlParameterSource parameterSource = setParameters(condList, row);
-            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-            resultNum += template.update(sql, parameterSource);
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            List<MapSqlParameterSource> parameterSources = setBatchParameters(condList, batch);
+            for (MapSqlParameterSource parameterSource : parameterSources) {
+                parameterSource.addValue(pk.get(1), parameterSource.getValue(pk.get(0)));
+            }
+            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
         }
 
         return resultNum;
@@ -49,10 +53,9 @@ public class OutPutTableRepository {
         int resultNum = 0;
         String sql = generateDeleteSql(tableNm, pk.get(1));
 
-        for (Map<String, Object> row : result) {
-            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-            resultNum += template.update(sql, parameterSource);
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            List<MapSqlParameterSource> parameterSources = setBatchParameters(batch, pk);
+            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
         }
 
         return resultNum;
@@ -104,19 +107,49 @@ public class OutPutTableRepository {
         return sql.toString();
     }
 
-    private MapSqlParameterSource setParameters(Map<String, String[]> condList, Map<String, Object> row) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+    private List<List<Map<String, Object>>> partitionList(List<Map<String, Object>> list, int batchSize) {
+        List<List<Map<String, Object>>> partitions = new ArrayList<>();
+        int size = list.size();
 
-        for (Map.Entry<String, String[]> entry : condList.entrySet()) {
-            String column = entry.getKey();
-            String[] condArray = entry.getValue();
-            String defaultValue = condArray[0];
-            String field = condArray[1];
-
-            Object value = (field.equals("")) ? defaultValue : row.get(field);
-            parameterSource.addValue(column, value);
+        for (int i = 0; i < size; i += batchSize) {
+            int end = Math.min(size, i + batchSize);
+            partitions.add(list.subList(i, end));
         }
 
-        return parameterSource;
+        return partitions;
+    }
+
+    private List<MapSqlParameterSource> setBatchParameters(Map<String, String[]> condList, List<Map<String, Object>> batch) {
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
+
+        for (Map<String, Object> row : batch) {
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+
+            for (Map.Entry<String, String[]> entry : condList.entrySet()) {
+                String column = entry.getKey();
+                String[] condArray = entry.getValue();
+                String defaultValue = condArray[0];
+                String field = condArray[1];
+
+                Object value = (field.equals("")) ? defaultValue : row.get(field);
+                parameterSource.addValue(column, value);
+            }
+
+            parameterSources.add(parameterSource);
+        }
+
+        return parameterSources;
+    }
+
+    private List<MapSqlParameterSource> setBatchParameters(List<Map<String, Object>> batch, List<String> pk) {
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
+
+        for (Map<String, Object> row : batch) {
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+            parameterSources.add(parameterSource);
+        }
+
+        return parameterSources;
     }
 }

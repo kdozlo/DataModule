@@ -19,7 +19,7 @@ public class DataProcessService {
 
         List<Map<String, Object>> result = dataProcessRepository.findSQLResult(progWorkFlowMng);
 
-        System.out.println("findSQLResult");
+        /*System.out.println("findSQLResult");
         for (Map<String, Object> row : result) {
             // this.flowAttr.getString("col") 배열 값 보기 가능 ex. {"col" : ["idx", "user_no", "yyyymmdd"]}"
             for( String key : row.keySet() ){
@@ -27,7 +27,7 @@ public class DataProcessService {
                 System.out.printf(key+" : "+value + " ");
             }
             System.out.println();
-        }
+        }*/
 
         return result;
     }
@@ -107,13 +107,13 @@ public class DataProcessService {
         }
 
         //filterSQLResult 출력값
-        for (Map<String, Object> row : result) {
+        /*for (Map<String, Object> row : result) {
             for( String key : row.keySet() ){
                 Object value = row.get(key);
                 System.out.printf(key+" : "+value + " ");
             }
             System.out.println();
-        }
+        }*/
 
         return result;
     }
