@@ -58,9 +58,6 @@ public class NodeController {
                     result = dataProcessService.filterSQLResult(result, Optional.of(cur));
                     break;
                 case "output" :
-                    //String tableNm = "table" + "_" + cur.getProgId().toString();
-                    //outPutTableService.createTable(tableNm, cur);
-                    //System.out.println("insert 개수 : " + outPutTableService.insertResultToCreateTable(tableNm, result));
                     System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
 
                     break;

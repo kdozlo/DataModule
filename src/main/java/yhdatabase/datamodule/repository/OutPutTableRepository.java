@@ -120,12 +120,14 @@ public class OutPutTableRepository {
         return resultNum;
     }
 
+    //output node json 형식 변경으로 현재 사용 불가
     public String createTable(String sql) {
         template.getJdbcTemplate().execute(sql);
 
         return sql;
     }
 
+    //output node json 형식 변경으로 현재 사용 불가
     public int insertResultToCreateTable(String tableNm, List<Map<String, Object>> result) {
         int resultNum = 0;
 
