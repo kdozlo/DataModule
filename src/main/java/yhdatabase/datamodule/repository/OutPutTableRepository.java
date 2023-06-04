@@ -53,7 +53,10 @@ public class OutPutTableRepository {
                     parameterSource.addValue(column, value);
                 }
 
-                parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+                MapSqlParameterSource pkParameterSource = new MapSqlParameterSource();
+                pkParameterSource.addValue(pk.get(1), row.get(pk.get(0))); // PK 값 갱신
+                parameterSource.addValues(pkParameterSource.getValues()); // PK 값을 포함한 매개변수 추가
+
                 parameterSources.add(parameterSource);
             }
 
