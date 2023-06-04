@@ -15,7 +15,7 @@ import java.util.Set;
 public class OutPutTableRepository {
 
     private final NamedParameterJdbcTemplate template;
-    private static final int BATCH_SIZE = 2000;
+    private static final int BATCH_SIZE = 5000;
 
     public OutPutTableRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);

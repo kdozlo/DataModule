@@ -26,7 +26,7 @@ public class ProgMstController {
         return savedProgMst.getProgId();
     }
 
-    @PostMapping("/project/load/{progId}")
+    @GetMapping("/project/load/{progId}")
     public Optional<ResponseProgMstDto> loadProgMst(@PathVariable String progId) {
         return progMstService.findById(Long.parseLong(progId));
     }
