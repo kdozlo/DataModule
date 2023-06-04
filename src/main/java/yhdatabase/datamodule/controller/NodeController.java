@@ -9,7 +9,10 @@ import yhdatabase.datamodule.service.DataProcessService;
 import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -47,36 +50,58 @@ public class NodeController {
 
         List<Map<String, Object>> result = null;
 
+        Long start;
+        Long end;
+        String sqlTime = "";
+        String filterTime = "";
+        String outputTime = "";
+
         for (ProgWorkFlowMng cur : nodeList) {
             String flowType = cur.getFlowType();
 
             switch(flowType) {
                 case "select" :
+                    start = System.currentTimeMillis();
+
                     result = dataProcessService.findSQLResult(Optional.of(cur));
+
+                    end = System.currentTimeMillis();
+                    sqlTime += timeDiff(start, end);
                     break;
                 case "filter" :
+                    start = System.currentTimeMillis();
+
                     result = dataProcessService.filterSQLResult(result, Optional.of(cur));
+
+                    end = System.currentTimeMillis();
+                    filterTime += timeDiff(start, end);
                     break;
                 case "output" :
-                    //String tableNm = "table" + "_" + cur.getProgId().toString();
-                    //outPutTableService.createTable(tableNm, cur);
-                    //System.out.println("insert 개수 : " + outPutTableService.insertResultToCreateTable(tableNm, result));
+                    start = System.currentTimeMillis();
+
                     System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
 
+                    end = System.currentTimeMillis();
+                    System.out.print("Output node - ");
+                    outputTime += timeDiff(start, end);
                     break;
             }
         }
 
+        System.out.println("SQL node 실행 시간 - " + sqlTime);
+        System.out.println("Filter node 실행 시간 - " + filterTime);
+        System.out.println("Output node 실행 시간 - " + outputTime);
+
         //필터노드 정보까지만 있음.
         // 필터 노드를 insert/update/delete 처리하여, 다른 테이블에 옮긴 정보들은 옮긴 디비 테이블에서 확인 가능. 여기서는 몇개 처리됬는지만 반환.
-        System.out.println("컨트롤러 후");
+        /*System.out.println("컨트롤러 후");
         for (Map<String, Object> row : result) {
             for( String key : row.keySet() ){
                 Object value = row.get(key);
                 System.out.printf(key+" : "+value + " ");
             }
             System.out.println();
-        }
+        }*/
 
 
         return result;
@@ -90,5 +115,14 @@ public class NodeController {
     @GetMapping("project/{table_name}")
     public List<String> getTableCols(@PathVariable String table_name){
         return progWorkFlowMngService.getTableCols(table_name);
+    }
+
+    public String timeDiff(Long start, Long end) {
+        long executionTimeMillis = start - end;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(executionTimeMillis) % 60;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(executionTimeMillis) % 60;
+        long hours = TimeUnit.MILLISECONDS.toHours(executionTimeMillis);
+
+        return "실행 시간: " + hours + "시간 " + minutes + "분 " + seconds + "초";
     }
 }

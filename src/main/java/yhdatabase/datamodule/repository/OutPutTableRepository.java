@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,152 +15,159 @@ import java.util.Set;
 public class OutPutTableRepository {
 
     private final NamedParameterJdbcTemplate template;
+    private static final int BATCH_SIZE = 5000;
 
     public OutPutTableRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public int insertResult(List<Map<String, Object>> result,
-                            String tableNm, Map<String, String[]> condList) {
+    public int insertResult(List<Map<String, Object>> result, String tableNm, Map<String, String[]> condList) {
         int resultNum = 0;
-        Set<String> condListKey = condList.keySet();
+        String sql = generateInsertSql(tableNm, condList.keySet());
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-
-        for(Map<String, Object> row : result) {
-            // 컬럼 목록 추출
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append(tableNm + " (");
-            StringBuilder columns = new StringBuilder();
-            StringBuilder values = new StringBuilder();
-
-            for(String s : condListKey) {
-                String column = s;
-                Object value;
-
-                String field = condList.get(s)[1];
-                if (field.equals("")) {
-                    value = condList.get(s)[0];
-                } else {
-                    value = row.get(field);
-                }
-
-                columns.append(column).append(", ");
-                values.append(":").append(column).append(", ");
-
-                parameterSource.addValue(column, value);
-            }
-
-            // 마지막 쉼표 제거
-            columns.delete(columns.length() - 2, columns.length());
-            values.delete(values.length() - 2, values.length());
-
-            sql.append(columns).append(") VALUES (").append(values).append(")");
-
-            resultNum += template.update(sql.toString(), parameterSource);
-
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            List<MapSqlParameterSource> parameterSources = setBatchParameters(condList, batch);
+            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
         }
 
         return resultNum;
     }
 
-    public int updateResult(List<Map<String, Object>> result,
-                            String tableNm, Map<String, String[]> condList, List<String> pk) {
+    public int updateResult(List<Map<String, Object>> result, String tableNm, Map<String, String[]> condList, List<String> pk) {
         int resultNum = 0;
-        Set<String> condListKey = condList.keySet();
+        String sql = generateUpdateSql(tableNm, condList.keySet(), pk.get(1));
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
 
-        for(Map<String, Object> row : result) {
-            StringBuilder updateQuery = new StringBuilder("UPDATE " + tableNm + " SET ");
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            for (Map<String, Object> row : batch) {
+                MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 
-            for(String s : condListKey) {
-                if(s.equals(pk.get(1)))
-                    continue;
-                String column = s;
-                Object value;
+                for (Map.Entry<String, String[]> entry : condList.entrySet()) {
+                    String column = entry.getKey();
+                    String[] condArray = entry.getValue();
+                    String defaultValue = condArray[0];
+                    String field = condArray[1];
 
-                String field = condList.get(s)[1];
-                if (field.equals("")) {
-                    value = condList.get(s)[0];
-                } else {
-                    value = row.get(field);
-                    System.out.println(field + "" + value);
+                    Object value = (field.equals("")) ? defaultValue : row.get(field);
+                    parameterSource.addValue(column, value);
                 }
 
-                updateQuery.append(column).append(" = :").append(column).append(", ");
-                parameterSource.addValue(column, value);
+                MapSqlParameterSource pkParameterSource = new MapSqlParameterSource();
+                pkParameterSource.addValue(pk.get(1), row.get(pk.get(0))); // PK 값 갱신
+                parameterSource.addValues(pkParameterSource.getValues()); // PK 값을 포함한 매개변수 추가
+
+                parameterSources.add(parameterSource);
             }
 
-            System.out.println();
-            updateQuery.setLength(updateQuery.length() - 2);
+            int[] batchUpdateResult = template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0]));
+            resultNum += Arrays.stream(batchUpdateResult).sum();
 
-            updateQuery.append(" WHERE ").append(pk.get(1)).append(" = :").append(pk.get(1));
-            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-
-            System.out.println(updateQuery);
-
-            resultNum += template.update(updateQuery.toString(), parameterSource);
+            parameterSources.clear();
         }
-
 
         return resultNum;
     }
 
     public int deleteResult(List<Map<String, Object>> result, String tableNm, List<String> pk) {
         int resultNum = 0;
+        String sql = generateDeleteSql(tableNm, pk.get(1));
 
-        for(Map<String, Object> row : result) {
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
 
-            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            StringBuilder deleteQuery = new StringBuilder("DELETE FROM " + tableNm + " WHERE " + pk.get(1) + " = :" + pk.get(1));
+        for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
+            for (Map<String, Object> row : batch) {
+                MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+                parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+                parameterSources.add(parameterSource);
+            }
 
-            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
-            resultNum += template.update(deleteQuery.toString(), parameterSource);
+            int[] batchUpdateResult = template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0]));
+            resultNum += Arrays.stream(batchUpdateResult).sum();
+
+            parameterSources.clear();
         }
 
         return resultNum;
     }
 
-    public String createTable(String sql) {
-        template.getJdbcTemplate().execute(sql);
+    private String generateInsertSql(String tableNm, Set<String> condListKey) {
+        StringBuilder sql = new StringBuilder("INSERT INTO ");
+        sql.append(tableNm).append(" (");
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
 
-        return sql;
+        for (String column : condListKey) {
+            columns.append(column).append(", ");
+            values.append(":").append(column).append(", ");
+        }
+
+        // Remove the trailing comma
+        columns.delete(columns.length() - 2, columns.length());
+        values.delete(values.length() - 2, values.length());
+
+        sql.append(columns).append(") VALUES (").append(values).append(")");
+
+        return sql.toString();
     }
 
-    public int insertResultToCreateTable(String tableNm, List<Map<String, Object>> result) {
-        int resultNum = 0;
+    private String generateUpdateSql(String tableNm, Set<String> condListKey, String pkColumn) {
+        StringBuilder sql = new StringBuilder("UPDATE ");
+        sql.append(tableNm).append(" SET ");
+        StringBuilder setClause = new StringBuilder();
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        for (String column : condListKey) {
+            if (column.equals(pkColumn)) {
+                continue;
+            }
+            setClause.append(column).append(" = :").append(column).append(", ");
+        }
 
-        for(Map<String, Object> row : result) {
-            // 컬럼 목록 추출
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append("public." + tableNm + " (");
-            StringBuilder columns = new StringBuilder();
-            StringBuilder values = new StringBuilder();
+        // Remove the trailing comma
+        setClause.delete(setClause.length() - 2, setClause.length());
 
-            for (Map.Entry<String, Object> entry : row.entrySet()) {
+        sql.append(setClause).append(" WHERE ").append(pkColumn).append(" = :").append(pkColumn);
+
+        return sql.toString();
+    }
+
+    private String generateDeleteSql(String tableNm, String pkColumn) {
+        StringBuilder sql = new StringBuilder("DELETE FROM ");
+        sql.append(tableNm).append(" WHERE ").append(pkColumn).append(" = :").append(pkColumn);
+        return sql.toString();
+    }
+
+    private List<List<Map<String, Object>>> partitionList(List<Map<String, Object>> list, int batchSize) {
+        List<List<Map<String, Object>>> partitions = new ArrayList<>();
+        int size = list.size();
+
+        for (int i = 0; i < size; i += batchSize) {
+            int end = Math.min(size, i + batchSize);
+            partitions.add(list.subList(i, end));
+        }
+
+        return partitions;
+    }
+
+    private List<MapSqlParameterSource> setBatchParameters(Map<String, String[]> condList, List<Map<String, Object>> batch) {
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
+
+        for (Map<String, Object> row : batch) {
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+
+            for (Map.Entry<String, String[]> entry : condList.entrySet()) {
                 String column = entry.getKey();
-                Object value = entry.getValue();
+                String[] condArray = entry.getValue();
+                String defaultValue = condArray[0];
+                String field = condArray[1];
 
-                columns.append(column).append(", ");
-                values.append(":").append(column).append(", ");
-
+                Object value = (field.equals("")) ? defaultValue : row.get(field);
                 parameterSource.addValue(column, value);
             }
 
-            // 마지막 쉼표 제거
-            columns.delete(columns.length() - 2, columns.length());
-            values.delete(values.length() - 2, values.length());
-
-            sql.append(columns).append(") VALUES (").append(values).append(")");
-
-            resultNum += template.update(sql.toString(), parameterSource);
-
+            parameterSources.add(parameterSource);
         }
 
-        return resultNum;
+        return parameterSources;
     }
-
 }

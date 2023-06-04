@@ -38,31 +38,4 @@ public class OutPutTableService {
 
         return resultNum;
     }
-
-    public int insertResultToCreateTable(String tableNm, List<Map<String, Object>> result) {
-        return outPutTableRepository.insertResultToCreateTable(tableNm, result);
-    }
-
-    public String createTable(String tableNm, ProgWorkFlowMng cur) {
-        List<String> colList = cur.findColInfo();
-        Map<String, String[]> outputCondList = cur.findCondList(colList);
-
-
-        String sql ="DROP TABLE IF EXISTS " + tableNm + "; CREATE TABLE public." + tableNm + " (" +
-                "id int8 NOT NULL GENERATED ALWAYS AS IDENTITY, ";
-
-        for(String s : colList) {
-            if(s.equals(colList.get(colList.size() - 1))) {
-                sql += s + " " + outputCondList.get(s)[2] +");";
-            } else {
-                sql += s + " "+ outputCondList.get(s)[2] + ", ";
-            }
-        }
-
-        outPutTableRepository.createTable(sql);
-
-        return tableNm;
-    }
-
-
 }
