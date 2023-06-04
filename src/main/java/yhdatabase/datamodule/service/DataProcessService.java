@@ -38,8 +38,6 @@ public class DataProcessService {
         List<String> colList = progWorkFlowMng.get().findColInfo();
         Map<String, String[]> filterCondList = progWorkFlowMng.get().findCondList(colList);
 
-        System.out.println("filterSQLResult");
-
         for (Map<String, Object> row : sqlResult) {
             int checkCond = 0;
             int condCnt = 0;
@@ -107,7 +105,8 @@ public class DataProcessService {
         }
 
         //filterSQLResult 출력값
-        /*for (Map<String, Object> row : result) {
+        /*System.out.println("filterSQLResult");
+        for (Map<String, Object> row : result) {
             for( String key : row.keySet() ){
                 Object value = row.get(key);
                 System.out.printf(key+" : "+value + " ");

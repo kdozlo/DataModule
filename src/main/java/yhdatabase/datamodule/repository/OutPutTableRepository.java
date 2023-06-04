@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,14 +15,13 @@ import java.util.Set;
 public class OutPutTableRepository {
 
     private final NamedParameterJdbcTemplate template;
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 2000;
 
     public OutPutTableRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public int insertResult(List<Map<String, Object>> result,
-                            String tableNm, Map<String, String[]> condList) {
+    public int insertResult(List<Map<String, Object>> result, String tableNm, Map<String, String[]> condList) {
         int resultNum = 0;
         String sql = generateInsertSql(tableNm, condList.keySet());
 
@@ -33,17 +33,34 @@ public class OutPutTableRepository {
         return resultNum;
     }
 
-    public int updateResult(List<Map<String, Object>> result,
-                            String tableNm, Map<String, String[]> condList, List<String> pk) {
+    public int updateResult(List<Map<String, Object>> result, String tableNm, Map<String, String[]> condList, List<String> pk) {
         int resultNum = 0;
         String sql = generateUpdateSql(tableNm, condList.keySet(), pk.get(1));
 
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
+
         for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
-            List<MapSqlParameterSource> parameterSources = setBatchParameters(condList, batch);
-            for (MapSqlParameterSource parameterSource : parameterSources) {
-                parameterSource.addValue(pk.get(1), parameterSource.getValue(pk.get(0)));
+            for (Map<String, Object> row : batch) {
+                MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+
+                for (Map.Entry<String, String[]> entry : condList.entrySet()) {
+                    String column = entry.getKey();
+                    String[] condArray = entry.getValue();
+                    String defaultValue = condArray[0];
+                    String field = condArray[1];
+
+                    Object value = (field.equals("")) ? defaultValue : row.get(field);
+                    parameterSource.addValue(column, value);
+                }
+
+                parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+                parameterSources.add(parameterSource);
             }
-            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
+
+            int[] batchUpdateResult = template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0]));
+            resultNum += Arrays.stream(batchUpdateResult).sum();
+
+            parameterSources.clear();
         }
 
         return resultNum;
@@ -53,9 +70,19 @@ public class OutPutTableRepository {
         int resultNum = 0;
         String sql = generateDeleteSql(tableNm, pk.get(1));
 
+        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
+
         for (List<Map<String, Object>> batch : partitionList(result, BATCH_SIZE)) {
-            List<MapSqlParameterSource> parameterSources = setBatchParameters(batch, pk);
-            resultNum += template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0])).length;
+            for (Map<String, Object> row : batch) {
+                MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+                parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
+                parameterSources.add(parameterSource);
+            }
+
+            int[] batchUpdateResult = template.batchUpdate(sql, parameterSources.toArray(new MapSqlParameterSource[0]));
+            resultNum += Arrays.stream(batchUpdateResult).sum();
+
+            parameterSources.clear();
         }
 
         return resultNum;
@@ -72,7 +99,7 @@ public class OutPutTableRepository {
             values.append(":").append(column).append(", ");
         }
 
-        // 마지막 쉼표 제거
+        // Remove the trailing comma
         columns.delete(columns.length() - 2, columns.length());
         values.delete(values.length() - 2, values.length());
 
@@ -93,7 +120,7 @@ public class OutPutTableRepository {
             setClause.append(column).append(" = :").append(column).append(", ");
         }
 
-        // 마지막 쉼표 제거
+        // Remove the trailing comma
         setClause.delete(setClause.length() - 2, setClause.length());
 
         sql.append(setClause).append(" WHERE ").append(pkColumn).append(" = :").append(pkColumn);
@@ -135,18 +162,6 @@ public class OutPutTableRepository {
                 parameterSource.addValue(column, value);
             }
 
-            parameterSources.add(parameterSource);
-        }
-
-        return parameterSources;
-    }
-
-    private List<MapSqlParameterSource> setBatchParameters(List<Map<String, Object>> batch, List<String> pk) {
-        List<MapSqlParameterSource> parameterSources = new ArrayList<>();
-
-        for (Map<String, Object> row : batch) {
-            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            parameterSource.addValue(pk.get(1), row.get(pk.get(0)));
             parameterSources.add(parameterSource);
         }
 

@@ -52,6 +52,9 @@ public class NodeController {
 
         Long start;
         Long end;
+        String sqlTime = "";
+        String filterTime = "";
+        String outputTime = "";
 
         for (ProgWorkFlowMng cur : nodeList) {
             String flowType = cur.getFlowType();
@@ -63,8 +66,7 @@ public class NodeController {
                     result = dataProcessService.findSQLResult(Optional.of(cur));
 
                     end = System.currentTimeMillis();
-                    System.out.print("SQL node - ");
-                    timeDiff(start, end);
+                    sqlTime += timeDiff(start, end);
                     break;
                 case "filter" :
                     start = System.currentTimeMillis();
@@ -72,8 +74,7 @@ public class NodeController {
                     result = dataProcessService.filterSQLResult(result, Optional.of(cur));
 
                     end = System.currentTimeMillis();
-                    System.out.print("SQL node - ");
-                    timeDiff(start, end);
+                    filterTime += timeDiff(start, end);
                     break;
                 case "output" :
                     start = System.currentTimeMillis();
@@ -81,11 +82,15 @@ public class NodeController {
                     System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
 
                     end = System.currentTimeMillis();
-                    System.out.print("SQL node - ");
-                    timeDiff(start, end);
+                    System.out.print("Output node - ");
+                    outputTime += timeDiff(start, end);
                     break;
             }
         }
+
+        System.out.println("SQL node 실행 시간 - " + sqlTime);
+        System.out.println("Filter node 실행 시간 - " + filterTime);
+        System.out.println("Output node 실행 시간 - " + outputTime);
 
         //필터노드 정보까지만 있음.
         // 필터 노드를 insert/update/delete 처리하여, 다른 테이블에 옮긴 정보들은 옮긴 디비 테이블에서 확인 가능. 여기서는 몇개 처리됬는지만 반환.
@@ -103,12 +108,12 @@ public class NodeController {
     }
 
 
-    public void timeDiff(Long start, Long end) {
+    public String timeDiff(Long start, Long end) {
         long executionTimeMillis = start - end;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(executionTimeMillis) % 60;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(executionTimeMillis) % 60;
         long hours = TimeUnit.MILLISECONDS.toHours(executionTimeMillis);
 
-        System.out.println("실행 시간: " + hours + "시간 " + minutes + "분 " + seconds + "초");
+        return "실행 시간: " + hours + "시간 " + minutes + "분 " + seconds + "초";
     }
 }
