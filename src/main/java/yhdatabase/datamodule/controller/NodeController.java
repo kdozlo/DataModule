@@ -121,7 +121,7 @@ public class NodeController {
 
 
     public String timeDiff(Long start, Long end) {
-        long executionTimeMillis = start - end;
+        long executionTimeMillis = end - start;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(executionTimeMillis) % 60;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(executionTimeMillis) % 60;
         long hours = TimeUnit.MILLISECONDS.toHours(executionTimeMillis);
