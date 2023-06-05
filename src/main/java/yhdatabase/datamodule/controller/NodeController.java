@@ -5,12 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import yhdatabase.datamodule.domain.ProgWorkFlowMng;
 import yhdatabase.datamodule.repository.dto.ProgWorkFlowMngDto;
+import yhdatabase.datamodule.repository.dto.ResultDto;
 import yhdatabase.datamodule.service.DataProcessService;
 import yhdatabase.datamodule.service.OutPutTableService;
 import yhdatabase.datamodule.service.ProgWorkFlowMngService;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -45,10 +44,16 @@ public class NodeController {
     }
 
     @GetMapping("/project/sql-result/{progId}")
-    public List<Map<String, Object>> getResult(@PathVariable String progId){
-        List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
+    public List<ResultDto> getResult(@PathVariable String progId, @RequestParam(value = "flowSeq") List<String> flowSeq){
+        //List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
+
+        List<ProgWorkFlowMng> nodeList = new ArrayList<>();
+        for(String s : flowSeq) {
+            nodeList.add(progWorkFlowMngService.findById(Long.parseLong(s)).get());
+        }
 
         List<Map<String, Object>> result = null;
+        List<ResultDto> resultDto = new ArrayList<>();
 
         Long start;
         Long end;
@@ -67,6 +72,8 @@ public class NodeController {
 
                     end = System.currentTimeMillis();
                     sqlTime += timeDiff(start, end);
+
+                    resultDto.add(new ResultDto(cur.getFlowId(), "select", result.size(), sqlTime));
                     break;
                 case "filter" :
                     start = System.currentTimeMillis();
@@ -75,15 +82,18 @@ public class NodeController {
 
                     end = System.currentTimeMillis();
                     filterTime += timeDiff(start, end);
+
+                    resultDto.add(new ResultDto(cur.getFlowId(),"filter", result.size(), filterTime));
                     break;
                 case "output" :
                     start = System.currentTimeMillis();
 
-                    System.out.println("output 노드 수행된 튜플 개수 : " + outPutTableService.processOutputNode(result, cur));
+                    int resultNum = outPutTableService.processOutputNode(result, cur);
 
                     end = System.currentTimeMillis();
-                    System.out.print("Output node - ");
                     outputTime += timeDiff(start, end);
+
+                    resultDto.add(new ResultDto(cur.getFlowId(),"output", resultNum, outputTime));
                     break;
             }
         }
@@ -104,7 +114,7 @@ public class NodeController {
         }*/
 
 
-        return result;
+        return resultDto;
     }
 
     @GetMapping("project/get-tables")
@@ -118,7 +128,7 @@ public class NodeController {
     }
 
     public String timeDiff(Long start, Long end) {
-        long executionTimeMillis = start - end;
+        long executionTimeMillis = end - start;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(executionTimeMillis) % 60;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(executionTimeMillis) % 60;
         long hours = TimeUnit.MILLISECONDS.toHours(executionTimeMillis);
