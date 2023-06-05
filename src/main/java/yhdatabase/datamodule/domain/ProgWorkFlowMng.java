@@ -51,6 +51,10 @@ public class ProgWorkFlowMng {
         return this.flowAttr.getString("sql");
     }
 
+    //filrer node and/or 정보 확인
+    public String findOrFilter() {
+        return this.flowAttr.getString("orFilter");
+    }
 
     //filter node, output node - find col_info
     public List<String> findColInfo() {

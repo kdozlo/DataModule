@@ -37,6 +37,8 @@ public class DataProcessService {
         List<Map<String, Object>> result = new ArrayList<>();
         List<String> colList = progWorkFlowMng.get().findColInfo();
         Map<String, String[]> filterCondList = progWorkFlowMng.get().findCondList(colList);
+        //and or 판단
+        String orFilter = progWorkFlowMng.get().findOrFilter();
 
         for (Map<String, Object> row : sqlResult) {
             int checkCond = 0;
@@ -100,8 +102,13 @@ public class DataProcessService {
                 }
             }
 
-            if(condCnt == checkCond)
-                result.add(row);
+            if (orFilter.equals("or") || orFilter.equals("OR")) {
+                if(checkCond > 0)
+                    result.add(row);
+            } else {
+                if(condCnt == checkCond)
+                    result.add(row);
+            }
         }
 
         //filterSQLResult 출력값
