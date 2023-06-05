@@ -45,8 +45,13 @@ public class NodeController {
     }
 
     @GetMapping("/project/sql-result/{progId}")
-    public List<Map<String, Object>> getResult(@PathVariable String progId){
-        List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
+    public List<Map<String, Object>> getResult(@PathVariable String progId, @RequestParam(value = "flowSeq") List<String> flowSeq){
+        //List<ProgWorkFlowMng> nodeList = progWorkFlowMngService.findByProgId(Long.parseLong(progId));
+
+        List<ProgWorkFlowMng> nodeList = new ArrayList<>();
+        for(String s : flowSeq) {
+            nodeList.add(progWorkFlowMngService.findById(Long.parseLong(s)).get());
+        }
 
         List<Map<String, Object>> result = null;
 
