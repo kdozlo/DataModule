@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class ResultDto {
     //select, filter, output
+    Long nodeId;
     String nodeType;
 
     //처리된 데이터 개수
@@ -15,9 +16,14 @@ public class ResultDto {
     //실행 시간
     String timeDiff;
 
-    public ResultDto(String nodeType, int resultNum, String timeDiff) {
+    public ResultDto(Long nodeId, String nodeType, int resultNum, String timeDiff) {
+        this.nodeId = nodeId;
         this.nodeType = nodeType;
         this.resultNum = resultNum;
         this.timeDiff = timeDiff;
+    }
+
+    public  ResultDto() {
+
     }
 }
