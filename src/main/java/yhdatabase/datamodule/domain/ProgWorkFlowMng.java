@@ -53,7 +53,7 @@ public class ProgWorkFlowMng {
 
     //filrer node and/or 정보 확인
     public String findOrFilter() {
-        return this.flowAttr.getString("orFilter");
+        return this.flowAttr.getString("orFilter").toLowerCase();
     }
 
     //filter node, output node - find col_info

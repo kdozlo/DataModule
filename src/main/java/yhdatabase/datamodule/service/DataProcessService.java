@@ -102,7 +102,7 @@ public class DataProcessService {
                 }
             }
 
-            if (orFilter.equals("or") || orFilter.equals("OR")) {
+            if (orFilter.equals("or")) {
                 if(checkCond > 0)
                     result.add(row);
             } else {
