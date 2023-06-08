@@ -100,6 +100,37 @@ public class ProgWorkFlowMngRepository {
         return pwfList;
     }
 
+    public List<String> getTables(){
+        String sql = "SELECT table_name\n" +
+                "FROM information_schema.tables\n" +
+                "WHERE table_schema = 'public'\n" +
+                "AND table_name NOT LIKE '%prog%';";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+
+        List<String> tableList = template.query(
+                sql,
+                parameters,
+                (resultSet, rowNum) -> resultSet.getString("table_name")
+        );
+
+        return tableList;
+    }
+
+    public List<String> getTableCols(String table_name){
+        String sql = "SELECT column_name\n" +
+                "FROM information_schema.columns\n" +
+                "WHERE table_schema = 'public'\n" +
+                "AND table_name = :table_name;";
+
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("table_name", table_name);
+
+        return template.queryForList(sql, param, String.class);
+
+    }
+
     private RowMapper<ProgWorkFlowMng> progWorkFlowMngRowMapper() {
         return ((rs, rowNum) -> {
             ProgWorkFlowMng progWorkFlowMng = new ProgWorkFlowMng();

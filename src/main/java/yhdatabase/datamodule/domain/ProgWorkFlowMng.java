@@ -1,6 +1,7 @@
 package yhdatabase.datamodule.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProgWorkFlowMng {
     private Long flowId;
 
@@ -43,9 +45,6 @@ public class ProgWorkFlowMng {
         this.dltDttm = dltDttm;
     }
 
-    public ProgWorkFlowMng() {
-    }
-    
     //select node - findSql
     public String findSql() {
         return this.flowAttr.getString("sql");

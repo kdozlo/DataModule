@@ -117,6 +117,15 @@ public class NodeController {
         return resultDto;
     }
 
+    @GetMapping("project/get-tables")
+    public List<String> getTables(){
+        return progWorkFlowMngService.getTables();
+    }
+
+    @GetMapping("project/{table_name}")
+    public List<String> getTableCols(@PathVariable String table_name){
+        return progWorkFlowMngService.getTableCols(table_name);
+    }
 
     public String timeDiff(Long start, Long end) {
         long executionTimeMillis = end - start;

@@ -1,12 +1,14 @@
 package yhdatabase.datamodule.repository.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ResponseProgMstDto {
     private Long progId;
 
@@ -23,10 +25,6 @@ public class ResponseProgMstDto {
     private LocalDateTime updtDttm;
 
     private LocalDateTime dltDttm;
-
-    public ResponseProgMstDto() {
-
-    }
 
     public ResponseProgMstDto(Long progId, String progNm, String progDesc, String viewAttr, Boolean useYn, LocalDateTime crtdDttm, LocalDateTime updtDttm, LocalDateTime dltDttm) {
         this.progId = progId;
